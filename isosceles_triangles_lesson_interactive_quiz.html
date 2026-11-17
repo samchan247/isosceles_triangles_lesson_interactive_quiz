@@ -1,0 +1,2753 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Isosceles Triangles: Lesson &amp; Interactive Quiz</title>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,600;0,700;1,600;1,700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { 
+      background: #f1f5f9; 
+      display: flex; 
+      justify-content: center; 
+      align-items: center; 
+      min-height: 100vh; 
+      font-family: 'Inter', sans-serif; 
+    }
+
+    /* MathType-style standard mathematical typography */
+    .math-var {
+      font-family: "Times New Roman", Times, Georgia, serif;
+      font-style: italic;
+    }
+    .math-text {
+      font-family: "Times New Roman", Times, Georgia, serif;
+      font-style: normal;
+    }
+    
+    #app-container {
+      position: relative;
+      width: 1280px;
+      height: 720px;
+      background: #ffffff;
+      overflow: hidden;
+      box-shadow: 0 20px 40px -10px rgba(0, 0, 0, 0.15);
+      border-radius: 20px;
+      border: 1px solid #e2e8f0;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* Header styling */
+    .app-header {
+      padding: 18px 48px;
+      border-bottom: 2px solid #f1f5f9;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: #ffffff;
+      z-index: 10;
+    }
+    .app-header h1 {
+      font-family: 'Playfair Display', serif;
+      font-size: 24px;
+      color: #0f172a;
+    }
+    .header-right {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .part-switcher {
+      display: flex;
+      background: #f1f5f9;
+      padding: 4px;
+      border-radius: 99px;
+      gap: 4px;
+    }
+    .part-tab {
+      padding: 6px 14px;
+      border-radius: 99px;
+      font-size: 13px;
+      font-weight: 700;
+      border: none;
+      cursor: pointer;
+      color: #64748b;
+      background: transparent;
+      transition: all 0.2s;
+    }
+    .part-tab.active {
+      background: #0f172a;
+      color: #ffffff;
+      box-shadow: 0 2px 6px rgba(15, 23, 42, 0.15);
+    }
+    .progress-pill {
+      background: #f1f5f9;
+      padding: 7px 14px;
+      border-radius: 99px;
+      font-weight: 600;
+      color: #475569;
+      font-size: 12.5px;
+      letter-spacing: 0.6px;
+      text-transform: uppercase;
+    }
+    .score-pill {
+      background: #e0f2fe;
+      color: #0369a1;
+      padding: 7px 14px;
+      border-radius: 99px;
+      font-weight: 700;
+      font-size: 12.5px;
+      letter-spacing: 0.5px;
+      border: 1px solid #bae6fd;
+    }
+    .highscore-pill {
+      background: #fef3c7;
+      color: #b45309;
+      padding: 7px 14px;
+      border-radius: 99px;
+      font-weight: 700;
+      font-size: 12.5px;
+      letter-spacing: 0.5px;
+      border: 1px solid #fde68a;
+    }
+
+    /* Slide container */
+    .slides-wrapper {
+      flex: 1;
+      position: relative;
+    }
+    .slide {
+      position: absolute;
+      top: 0; left: 0; right: 0; bottom: 0;
+      padding: 32px 48px;
+      display: flex;
+      opacity: 0;
+      pointer-events: none;
+      transform: translateX(20px);
+      transition: all 0.45s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    .slide.active {
+      opacity: 1;
+      pointer-events: auto;
+      transform: translateX(0);
+    }
+
+    /* Content Layouts */
+    .two-col {
+      display: flex;
+      gap: 48px;
+      width: 100%;
+      height: 100%;
+      align-items: center;
+    }
+    .text-col {
+      flex: 1.25;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+    }
+    .visual-col {
+      flex: 0.75;
+      height: 100%;
+      background: #f8fafc;
+      border-radius: 24px;
+      border: 2px solid #e2e8f0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      position: relative;
+      padding: 16px;
+    }
+
+    /* Graph paper background for Anatomy & Example slides */
+    .graph-bg {
+      background-color: #fbf9f1;
+      background-image: 
+        linear-gradient(to right, rgba(148, 163, 184, 0.25) 1px, transparent 1px),
+        linear-gradient(to bottom, rgba(148, 163, 184, 0.25) 1px, transparent 1px);
+      background-size: 28px 28px;
+    }
+
+    /* Typography */
+    h2 {
+      font-family: 'Playfair Display', serif;
+      font-size: 40px;
+      color: #0f172a;
+      margin-bottom: 20px;
+      line-height: 1.2;
+    }
+    .main-text {
+      font-size: 21px;
+      color: #334155;
+      line-height: 1.55;
+      margin-bottom: 20px;
+    }
+    .theorem-math {
+      font-size: 26px;
+      font-weight: 700;
+      margin-bottom: 32px;
+    }
+    .math-blue { color: #0ea5e9; }
+    .math-red { color: #e11d48; }
+    .math-amber { color: #d97706; }
+
+    /* Feature List for Slide 1 */
+    .feature-list {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+    }
+    .feature-list li {
+      background: #f8fafc;
+      border: 1.5px solid #e2e8f0;
+      border-radius: 12px;
+      padding: 14px 18px;
+      font-size: 19px;
+      color: #1e293b;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .badge {
+      padding: 4px 10px;
+      border-radius: 6px;
+      font-weight: 700;
+      font-size: 14px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      flex-shrink: 0;
+    }
+    .badge-slate { background: #e2e8f0; color: #0f172a; }
+    .badge-blue { background: #e0f2fe; color: #0369a1; }
+    .badge-amber { background: #fef3c7; color: #b45309; }
+
+    /* Step cards for Slide 2 */
+    .step-card {
+      background: #f8fafc;
+      border-left: 5px solid #0ea5e9;
+      border-radius: 0 12px 12px 0;
+      padding: 14px 20px;
+      margin-bottom: 14px;
+      font-size: 19px;
+      color: #1e293b;
+      line-height: 1.45;
+    }
+    .step-card.highlight {
+      background: #fffbeb;
+      border-left-color: #d97706;
+    }
+    .step-title {
+      font-weight: 700;
+      color: #0f172a;
+      display: block;
+      margin-bottom: 4px;
+      font-size: 16px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    /* Tags */
+    .tag-box {
+      display: inline-block;
+      padding: 16px 24px;
+      border-radius: 12px;
+      font-family: 'Inter', monospace;
+      font-size: 20px;
+      font-weight: 700;
+      box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.08);
+      align-self: flex-start;
+    }
+    .tag-blue {
+      background: #f0f9ff;
+      border: 2px solid #bae6fd;
+      color: #0284c7;
+    }
+    .tag-red {
+      background: #fff1f2;
+      border: 2px solid #fecdd3;
+      color: #be123c;
+    }
+    .tag-label {
+      font-size: 13px;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      opacity: 0.8;
+      display: block;
+      margin-bottom: 4px;
+    }
+
+    /* Animations */
+    @keyframes dash {
+      to { stroke-dashoffset: -20; }
+    }
+    .arrow-path {
+      fill: none;
+      stroke-width: 4;
+      stroke-dasharray: 8 6;
+      animation: dash 1s linear infinite;
+    }
+    .arrow-blue { stroke: #0ea5e9; }
+    .arrow-red { stroke: #e11d48; }
+
+    /* Controls */
+    .controls {
+      padding: 16px 48px;
+      border-top: 2px solid #f1f5f9;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: #ffffff;
+      z-index: 10;
+    }
+    .nav-btn {
+      padding: 12px 26px;
+      font-size: 16px;
+      font-weight: 600;
+      border: none;
+      border-radius: 12px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      transition: all 0.2s;
+    }
+    .btn-prev {
+      background: #f1f5f9;
+      color: #475569;
+    }
+    .btn-prev:hover:not(:disabled) { background: #e2e8f0; color: #0f172a; }
+    .btn-prev:disabled { opacity: 0.4; cursor: not-allowed; }
+    
+    .btn-next {
+      background: #0f172a;
+      color: #ffffff;
+    }
+    .btn-next:hover:not(:disabled) { background: #334155; box-shadow: 0 4px 12px rgba(15,23,42,0.3); }
+    .btn-next:disabled { opacity: 0.4; cursor: not-allowed; }
+    .btn-next.start-quiz-cta {
+      background: #0284c7;
+    }
+    .btn-next.start-quiz-cta:hover:not(:disabled) {
+      background: #0369a1;
+      box-shadow: 0 4px 14px rgba(2, 132, 199, 0.35);
+    }
+
+    .dots-wrapper {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+    .dots {
+      display: flex;
+      gap: 4.5px;
+      align-items: center;
+    }
+    .dot-divider {
+      width: 2px;
+      height: 18px;
+      background: #cbd5e1;
+      margin: 0 4px;
+    }
+    .dot {
+      width: 6.5px;
+      height: 6.5px;
+      border-radius: 50%;
+      background: #cbd5e1;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .dot.quiz-dot {
+      background: #bae6fd;
+    }
+    .dot.active {
+      background: #0f172a;
+      width: 18px;
+      border-radius: 99px;
+    }
+    .dot.quiz-dot.active {
+      background: #0284c7;
+    }
+
+    /* Slide 7 specific */
+    .comparison-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 40px;
+      width: 100%;
+      height: 100%;
+    }
+    .comp-card {
+      background: #f8fafc;
+      border: 2px solid #e2e8f0;
+      border-radius: 20px;
+      padding: 28px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+    }
+    .comp-card h3 {
+      font-size: 24px;
+      color: #0f172a;
+      margin-bottom: 16px;
+    }
+
+    /* PART 2: Interactive Quiz Styling (MathType + Standard SVG) */
+    .quiz-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: #e0f2fe;
+      color: #0369a1;
+      font-weight: 700;
+      font-size: 13px;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      padding: 6px 14px;
+      border-radius: 99px;
+      margin-bottom: 16px;
+      align-self: flex-start;
+    }
+    .quiz-badge.ext-badge {
+      background: #fef3c7;
+      color: #b45309;
+    }
+    .quiz-badge.conn-badge {
+      background: #ede9fe;
+      color: #6d28d9;
+    }
+    .quiz-badge.chal-badge {
+      background: #ffe4e6;
+      color: #be123c;
+    }
+    .quiz-badge.para-badge {
+      background: #dcfce7;
+      color: #15803d;
+    }
+    .quiz-question {
+      font-size: 20.5px;
+      color: #0f172a;
+      line-height: 1.48;
+      margin-bottom: 18px;
+      font-weight: 500;
+    }
+    .quiz-question .math-var,
+    .quiz-question .math-text {
+      font-size: 22.5px;
+    }
+    .mc-grid-2x2 {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      grid-template-rows: 1fr 1fr;
+      gap: 13px;
+      width: 100%;
+    }
+    .mc-option {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      background: #f8fafc;
+      border: 2px solid #e2e8f0;
+      border-radius: 14px;
+      padding: 13px 18px;
+      font-size: 21px;
+      font-weight: 600;
+      color: #1e293b;
+      cursor: pointer;
+      text-align: left;
+      transition: all 0.2s ease;
+    }
+    .mc-option:hover:not(:disabled) {
+      border-color: #0ea5e9;
+      background: #f0f9ff;
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(14, 165, 233, 0.12);
+    }
+    .mc-option:disabled {
+      cursor: default;
+    }
+    .opt-letter {
+      width: 36px;
+      height: 36px;
+      border-radius: 10px;
+      background: #e2e8f0;
+      color: #0f172a;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 700;
+      font-size: 17px;
+      flex-shrink: 0;
+      transition: all 0.2s;
+    }
+    .mc-option:hover:not(:disabled) .opt-letter {
+      background: #0ea5e9;
+      color: #ffffff;
+    }
+    .mc-option.correct {
+      background: #ecfdf5;
+      border-color: #10b981;
+      color: #065f46;
+    }
+    .mc-option.correct .opt-letter {
+      background: #10b981;
+      color: #ffffff;
+    }
+    .mc-option.wrong {
+      background: #fff1f2;
+      border-color: #f43f5e;
+      color: #9f1239;
+    }
+    .mc-option.wrong .opt-letter {
+      background: #f43f5e;
+      color: #ffffff;
+    }
+    .mc-option.dimmed {
+      opacity: 0.55;
+    }
+
+    .quiz-feedback {
+      margin-top: 15px;
+      padding: 12px 16px;
+      border-radius: 12px;
+      font-size: 15px;
+      line-height: 1.46;
+      display: none;
+      align-items: flex-start;
+      gap: 10px;
+    }
+    .quiz-feedback.show {
+      display: flex;
+    }
+    .quiz-feedback.fb-correct {
+      background: #ecfdf5;
+      border: 1.5px solid #a7f3d0;
+      color: #065f46;
+    }
+    .quiz-feedback.fb-wrong {
+      background: #fff1f2;
+      border: 1.5px solid #fecdd3;
+      color: #9f1239;
+    }
+
+    /* Quiz Summary Slide */
+    .summary-card {
+      width: 100%;
+      height: 100%;
+      background: #f8fafc;
+      border: 2px solid #e2e8f0;
+      border-radius: 24px;
+      padding: 40px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+    }
+    .score-ring {
+      width: 156px;
+      height: 156px;
+      border-radius: 50%;
+      background: #ffffff;
+      border: 8px solid #0ea5e9;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 18px;
+      box-shadow: 0 10px 25px -5px rgba(14, 165, 233, 0.2);
+    }
+    .score-num {
+      font-family: 'Playfair Display', serif;
+      font-size: 44px;
+      font-weight: 700;
+      color: #0f172a;
+      line-height: 1;
+    }
+    .score-den {
+      font-size: 15px;
+      font-weight: 600;
+      color: #64748b;
+      margin-top: 4px;
+    }
+    .summary-highscore-badge {
+      background: #fef3c7;
+      border: 1.5px solid #fde68a;
+      color: #b45309;
+      padding: 8px 20px;
+      border-radius: 99px;
+      font-weight: 700;
+      font-size: 16px;
+      margin-bottom: 8px;
+    }
+    .retry-btn {
+      margin-top: 20px;
+      padding: 14px 32px;
+      font-size: 17px;
+      font-weight: 700;
+      background: #0ea5e9;
+      color: #ffffff;
+      border: none;
+      border-radius: 12px;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .retry-btn:hover {
+      background: #0284c7;
+      box-shadow: 0 6px 16px rgba(2, 132, 199, 0.3);
+    }
+
+    /* Formal Proof Slide Styling */
+    .proof-box {
+      background: #f8fafc;
+      border: 1.5px solid #e2e8f0;
+      border-radius: 14px;
+      padding: 12px 16px;
+      margin-bottom: 10px;
+      font-size: 16px;
+      color: #1e293b;
+      line-height: 1.45;
+    }
+    .proof-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 6px;
+      font-size: 15.5px;
+    }
+    .proof-table th {
+      text-align: left;
+      font-size: 11.5px;
+      text-transform: uppercase;
+      letter-spacing: 0.7px;
+      color: #64748b;
+      padding-bottom: 6px;
+      border-bottom: 1.5px solid #cbd5e1;
+    }
+    .proof-table td {
+      padding: 6px 6px;
+      vertical-align: middle;
+      border-bottom: 1px solid #e2e8f0;
+    }
+    .proof-table tr:last-child td {
+      border-bottom: none;
+    }
+    .proof-table tr.proof-step-row,
+    .proof-table tr.conv-proof-step-row {
+      transition: background-color 0.25s ease;
+    }
+    .proof-table tr.proof-step-row.active-step {
+      background: #f0f9ff;
+    }
+    .proof-table tr.conv-proof-step-row.active-step {
+      background: #fff1f2;
+    }
+    .reason-pill {
+      display: inline-block;
+      background: #e2e8f0;
+      color: #0f172a;
+      font-weight: 600;
+      font-size: 13px;
+      padding: 2px 8px;
+      border-radius: 6px;
+    }
+    .reason-pill.blue {
+      background: #e0f2fe;
+      color: #0369a1;
+    }
+    .reason-pill.red {
+      background: #ffe4e6;
+      color: #be123c;
+    }
+    .sym-controls {
+      position: absolute;
+      bottom: 14px;
+      left: 16px;
+      right: 16px;
+      display: flex;
+      justify-content: center;
+      gap: 8px;
+      z-index: 5;
+    }
+    .sym-btn {
+      padding: 7px 13px;
+      border-radius: 99px;
+      border: 1.5px solid #cbd5e1;
+      background: #ffffff;
+      color: #334155;
+      font-size: 12.5px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all 0.2s;
+      box-shadow: 0 2px 5px rgba(15, 23, 42, 0.06);
+    }
+    .sym-btn:hover {
+      border-color: #0ea5e9;
+      color: #0284c7;
+    }
+    .sym-btn.active {
+      background: #0f172a;
+      border-color: #0f172a;
+      color: #ffffff;
+    }
+    .sym-btn.red-hover:hover {
+      border-color: #e11d48;
+      color: #be123c;
+    }
+    .fold-ghost {
+      transform-origin: 210px 200px;
+      transition: transform 1.15s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.55s ease;
+    }
+    .fold-ghost.folded {
+      transform: scaleX(-1);
+    }
+
+  </style>
+</head>
+<body>
+
+  <!-- Reusable SVG Definitions for Arrowheads -->
+  <svg width="0" height="0" style="position:absolute;">
+    <defs>
+      <marker id="arrowhead-blue" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+        <path d="M 0 1 L 10 5 L 0 9 z" fill="#0ea5e9" />
+      </marker>
+      <marker id="arrowhead-red" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+        <path d="M 0 1 L 10 5 L 0 9 z" fill="#e11d48" />
+      </marker>
+    </defs>
+  </svg>
+
+  <div id="app-container">
+    <div class="app-header">
+      <h1>Isosceles Triangles: Lesson &amp; Quiz</h1>
+      <div class="header-right">
+        <div class="part-switcher">
+          <button class="part-tab active" id="tab-part1" onclick="goToSlide(0)">Part 1: Lesson</button>
+          <button class="part-tab" id="tab-part2" onclick="goToSlide(7)">Part 2: Quiz (20 Qs)</button>
+        </div>
+        <div class="score-pill" id="header-score">Score: 0 / 200</div>
+        <div class="highscore-pill" id="header-highscore">High Score: 0 / 200</div>
+        <div class="progress-pill" id="slide-tracker">Part 1 &bull; Slide 1 of 7</div>
+      </div>
+    </div>
+
+    <div class="slides-wrapper">
+      
+      <!-- ================= PART 1: LESSON SLIDES (0 - 6) ================= -->
+
+      <!-- SLIDE 1: Anatomy of an Isosceles Triangle -->
+      <div class="slide active" id="slide0">
+        <div class="two-col">
+          <div class="text-col">
+            <h2>Anatomy of an Isosceles Triangle</h2>
+            <p class="main-text">An isosceles triangle has two sides of equal length, creating symmetry between its sides and interior angles.</p>
+            <ul class="feature-list">
+              <li>
+                <span class="badge badge-slate">Equal Sides</span>
+                <span>Legs <strong>AB = AC</strong> (marked with matching tick marks)</span>
+              </li>
+              <li>
+                <span class="badge badge-amber">Vertex A</span>
+                <span>Top vertex formed by the two equal sides; <strong>Vertex angle <em>a</em></strong></span>
+              </li>
+              <li>
+                <span class="badge badge-slate">Base BC</span>
+                <span>The third, unequal side opposite Vertex A</span>
+              </li>
+              <li>
+                <span class="badge badge-blue">Base Angles</span>
+                <span>Angles adjacent to the base are equal: <strong>&angle;ABC = &angle;ACB = <em>b</em></strong></span>
+              </li>
+            </ul>
+          </div>
+          <div class="visual-col graph-bg">
+            <svg width="100%" height="100%" viewBox="0 0 420 420">
+              <polygon points="210,65 75,335 345,335" fill="rgba(255,255,255,0.65)" stroke="#0f172a" stroke-width="4" stroke-linejoin="round"/>
+              <text x="210" y="42" text-anchor="middle" font-family="Playfair Display, serif" font-style="italic" font-weight="700" font-size="24" fill="#0f172a">A <tspan font-style="normal" font-weight="600" font-size="20">Vertex A</tspan></text>
+              <text x="52" y="352" text-anchor="middle" font-family="Playfair Display, serif" font-style="italic" font-weight="700" font-size="24" fill="#0f172a">B</text>
+              <text x="368" y="352" text-anchor="middle" font-family="Playfair Display, serif" font-style="italic" font-weight="700" font-size="24" fill="#0f172a">C</text>
+              <text x="210" y="368" text-anchor="middle" font-family="Playfair Display, serif" font-weight="600" font-size="21" fill="#0f172a">Base <tspan font-style="italic">BC</tspan></text>
+
+              <path d="M 192,101 A 40,40 0 0,0 228,101" fill="none" stroke="#d97706" stroke-width="3"/>
+              <path d="M 189,107 A 47,47 0 0,0 231,107" fill="none" stroke="#d97706" stroke-width="3"/>
+              <text x="210" y="138" text-anchor="middle" font-family="Playfair Display, serif" font-style="italic" font-weight="700" font-size="24" fill="#d97706">a</text>
+
+              <line x1="130" y1="194" x2="155" y2="206" stroke="#0f172a" stroke-width="4" stroke-linecap="round"/>
+              <line x1="290" y1="194" x2="265" y2="206" stroke="#0f172a" stroke-width="4" stroke-linecap="round"/>
+              <text x="296" y="196" text-anchor="start" font-family="Playfair Display, serif" font-weight="600" font-size="20" fill="#0f172a">Equal sides</text>
+
+              <path d="M 125,335 A 50,50 0 0,0 98,290" fill="none" stroke="#0ea5e9" stroke-width="3.5"/>
+              <text x="135" y="314" text-anchor="middle" font-family="Playfair Display, serif" font-style="italic" font-weight="700" font-size="23" fill="#0ea5e9">b</text>
+
+              <path d="M 295,335 A 50,50 0 0,1 322,290" fill="none" stroke="#0ea5e9" stroke-width="3.5"/>
+              <text x="285" y="314" text-anchor="middle" font-family="Playfair Display, serif" font-style="italic" font-weight="700" font-size="23" fill="#0ea5e9">b</text>
+
+              <line x1="312" y1="318" x2="345" y2="302" stroke="#0f172a" stroke-width="2"/>
+              <text x="348" y="305" text-anchor="start" font-family="Playfair Display, serif" font-weight="600" font-size="18" fill="#0f172a">Base</text>
+              <text x="348" y="324" text-anchor="start" font-family="Playfair Display, serif" font-weight="600" font-size="18" fill="#0f172a">angles</text>
+            </svg>
+          </div>
+        </div>
+      </div>
+
+      <!-- SLIDE 2: Angle Calculation Example -->
+      <div class="slide" id="slide1">
+        <div class="two-col">
+          <div class="text-col">
+            <h2>Worked Example: Finding Angles</h2>
+            <p class="main-text">In an isosceles triangle with equal sides <strong>AB = AC</strong>, knowing one angle lets you find the remaining two:</p>
+            
+            <div class="step-card">
+              <span class="step-title">Step 1: Equal Base Angles</span>
+              Angles opposite the equal sides are equal:<br>
+              <strong class="math-blue">&angle;ABC = &angle;ACB = 70&deg;</strong>
+            </div>
+
+            <div class="step-card">
+              <span class="step-title">Step 2: Interior Angle Sum Theorem</span>
+              The sum of interior angles in any triangle is <strong>180&deg;</strong>:<br>
+              <strong>70&deg; + 70&deg; + &angle;BAC = 180&deg;</strong>
+            </div>
+
+            <div class="step-card highlight">
+              <span class="step-title">Step 3: Solve for Vertex Angle</span>
+              &angle;BAC = 180&deg; &minus; (70&deg; + 70&deg;) = <strong class="math-amber">40&deg;</strong>
+            </div>
+          </div>
+
+          <div class="visual-col graph-bg">
+            <svg width="100%" height="100%" viewBox="0 0 420 420">
+              <polygon points="210,55 85,330 335,330" fill="rgba(255,255,255,0.75)" stroke="#0f172a" stroke-width="4" stroke-linejoin="round"/>
+              <text x="210" y="38" text-anchor="middle" font-family="Playfair Display, serif" font-style="italic" font-weight="700" font-size="24" fill="#0f172a">A</text>
+              <text x="64" y="346" text-anchor="middle" font-family="Playfair Display, serif" font-style="italic" font-weight="700" font-size="24" fill="#0f172a">B</text>
+              <text x="356" y="346" text-anchor="middle" font-family="Playfair Display, serif" font-style="italic" font-weight="700" font-size="24" fill="#0f172a">C</text>
+
+              <line x1="135" y1="186" x2="160" y2="198" stroke="#0f172a" stroke-width="4" stroke-linecap="round"/>
+              <line x1="285" y1="186" x2="260" y2="198" stroke="#0f172a" stroke-width="4" stroke-linecap="round"/>
+
+              <path d="M 190,99 A 48,48 0 0,0 230,99" fill="none" stroke="#d97706" stroke-width="3.5"/>
+              <text x="210" y="132" text-anchor="middle" font-weight="700" font-size="21" fill="#d97706">40&deg;</text>
+
+              <path d="M 135,330 A 50,50 0 0,0 106,284" fill="none" stroke="#0ea5e9" stroke-width="3.5"/>
+              <text x="148" y="312" text-anchor="middle" font-weight="700" font-size="21" fill="#0ea5e9">70&deg;</text>
+
+              <path d="M 285,330 A 50,50 0 0,1 314,284" fill="none" stroke="#0ea5e9" stroke-width="3.5"/>
+              <text x="272" y="312" text-anchor="middle" font-weight="700" font-size="21" fill="#0ea5e9">70&deg;</text>
+
+              <rect x="75" y="358" width="270" height="48" rx="8" fill="#ffffff" stroke="#0f172a" stroke-width="2"/>
+              <text x="210" y="388" text-anchor="middle" font-weight="700" font-size="18" fill="#0f172a">&angle;BAC = 40&deg; &nbsp;|&nbsp; &angle;ABC = &angle;ACB = 70&deg;</text>
+            </svg>
+          </div>
+        </div>
+      </div>
+
+      <!-- SLIDE 3: Formal Proof of the Theorem (Symmetry & Congruence) -->
+      <div class="slide" id="slide2">
+        <div class="two-col">
+          <div class="text-col">
+            <h2 style="font-size: 35px; margin-bottom: 8px;">Formal Proof of the Theorem</h2>
+            <p class="main-text" style="font-size: 17.5px; margin-bottom: 10px;">
+              <strong>Theorem:</strong> In <span class="math-text">&Delta;</span><span class="math-var">ABC</span>, if <span class="math-var">AB</span> <span class="math-text">=</span> <span class="math-var">AC</span>, then <span class="math-text">&ang;</span><span class="math-var">B</span> <span class="math-text">=</span> <span class="math-text">&ang;</span><span class="math-var">C</span>.
+            </p>
+
+            <div class="proof-box" style="background: #fffbeb; border-color: #fde68a;">
+              <strong style="color: #b45309;">Construction (Axis of Symmetry):</strong> Draw the angle bisector <span class="math-var">AD</span> of <span class="math-text">&ang;</span><span class="math-var">BAC</span>, meeting base <span class="math-var">BC</span> at <span class="math-var">D</span>, so that <span class="math-text">&ang;</span><span class="math-var">BAD</span> <span class="math-text">=</span> <span class="math-text">&ang;</span><span class="math-var">CAD</span>.
+            </div>
+
+            <div class="proof-box">
+              <strong style="color: #0f172a;">Proof:</strong> In <span class="math-text">&Delta;</span><span class="math-var">ABD</span> and <span class="math-text">&Delta;</span><span class="math-var">ACD</span>:
+              <table class="proof-table">
+                <thead>
+                  <tr>
+                    <th style="width: 54%;">Statement</th>
+                    <th style="width: 46%;">Reason</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr class="proof-step-row" id="proof-row-0">
+                    <td>1. <span class="math-var">AB</span> <span class="math-text">=</span> <span class="math-var">AC</span></td>
+                    <td><span class="reason-pill">Given</span></td>
+                  </tr>
+                  <tr class="proof-step-row" id="proof-row-1">
+                    <td>2. <span class="math-text">&ang;</span><span class="math-var">BAD</span> <span class="math-text">=</span> <span class="math-text">&ang;</span><span class="math-var">CAD</span></td>
+                    <td><span class="reason-pill">By construction</span></td>
+                  </tr>
+                  <tr class="proof-step-row" id="proof-row-2">
+                    <td>3. <span class="math-var">AD</span> <span class="math-text">=</span> <span class="math-var">AD</span></td>
+                    <td><span class="reason-pill">Common side</span></td>
+                  </tr>
+                  <tr class="proof-step-row" id="proof-row-3">
+                    <td>4. <span class="math-text">&Delta;</span><span class="math-var">ABD</span> <span class="math-text">&cong;</span> <span class="math-text">&Delta;</span><span class="math-var">ACD</span></td>
+                    <td><span class="reason-pill blue">SAS</span></td>
+                  </tr>
+                  <tr class="proof-step-row" id="proof-row-4">
+                    <td>5. <strong class="math-blue">&there4; <span class="math-text">&ang;</span><span class="math-var">B</span> <span class="math-text">=</span> <span class="math-text">&ang;</span><span class="math-var">C</span></strong></td>
+                    <td><span class="reason-pill blue">corr. &ang;s, &cong; &Delta;s</span></td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          <div class="visual-col graph-bg" style="flex-direction: column; padding-bottom: 52px;">
+            <svg id="symmetry-proof-svg" width="100%" height="100%" viewBox="0 0 420 400">
+              <!-- Base triangle shading for left & right halves -->
+              <polygon points="210,55 80,325 210,325" fill="rgba(14, 165, 233, 0.10)" stroke="none"/>
+              <polygon points="210,55 340,325 210,325" fill="rgba(244, 63, 94, 0.08)" stroke="none"/>
+
+              <!-- Animated Reflection / Fold Ghost Half (Left half reflecting across AD onto Right half) -->
+              <g id="sym-fold-group" class="fold-ghost" style="opacity: 0;">
+                <polygon points="210,55 80,325 210,325" fill="rgba(14, 165, 233, 0.28)" stroke="#0284c7" stroke-width="3" stroke-dasharray="6,4"/>
+                <path d="M 124,325 A 44,44 0 0,0 99,285" fill="none" stroke="#0284c7" stroke-width="4"/>
+              </g>
+
+              <!-- Main Triangle Outline -->
+              <polygon points="210,55 80,325 340,325" fill="none" stroke="#0f172a" stroke-width="3.5" stroke-linejoin="round"/>
+
+              <!-- Axis of Symmetry AD -->
+              <line x1="210" y1="35" x2="210" y2="352" stroke="#d97706" stroke-width="3" stroke-dasharray="8,5"/>
+              <text x="218" y="45" font-family="Inter, sans-serif" font-weight="700" font-size="12" fill="#b45309">Axis of Symmetry</text>
+
+              <!-- Tick marks on AB and AC (Step 1: AB = AC) -->
+              <g id="sym-step-sides">
+                <line x1="133" y1="184" x2="157" y2="196" stroke="#0f172a" stroke-width="3.5" stroke-linecap="round"/>
+                <line x1="287" y1="184" x2="263" y2="196" stroke="#0f172a" stroke-width="3.5" stroke-linecap="round"/>
+              </g>
+
+              <!-- Angle Bisector Arcs at A (Step 2: <BAD = <CAD) -->
+              <g id="sym-step-bisector">
+                <path d="M 191,94 A 43,43 0 0,0 210,98" fill="none" stroke="#d97706" stroke-width="3"/>
+                <path d="M 210,98 A 43,43 0 0,0 229,94" fill="none" stroke="#d97706" stroke-width="3"/>
+                <line x1="198" y1="91" x2="201" y2="103" stroke="#d97706" stroke-width="2.2"/>
+                <line x1="222" y1="91" x2="219" y2="103" stroke="#d97706" stroke-width="2.2"/>
+              </g>
+
+              <!-- Common side AD highlight (Step 3) -->
+              <line id="sym-step-common" x1="210" y1="55" x2="210" y2="325" stroke="#0ea5e9" stroke-width="5" opacity="0.35"/>
+
+              <!-- Base Angles B and C (Step 5: <B = <C) -->
+              <g id="sym-step-baseangles">
+                <path d="M 124,325 A 44,44 0 0,0 99,285" fill="none" stroke="#0ea5e9" stroke-width="4"/>
+                <path d="M 296,325 A 44,44 0 0,1 321,285" fill="none" stroke="#0ea5e9" stroke-width="4"/>
+                <text x="132" y="309" text-anchor="middle" font-family="Times New Roman, Times, serif" font-style="italic" font-weight="700" font-size="20" fill="#0284c7">b</text>
+                <text x="288" y="309" text-anchor="middle" font-family="Times New Roman, Times, serif" font-style="italic" font-weight="700" font-size="20" fill="#0284c7">b</text>
+              </g>
+
+              <!-- Symmetry Reflection Curved Arrows -->
+              <path d="M 135,235 Q 210,205 285,235" class="arrow-path arrow-blue" marker-end="url(#arrowhead-blue)" marker-start="url(#arrowhead-blue)"/>
+
+              <!-- Vertex Labels -->
+              <text x="196" y="46" text-anchor="middle" font-family="Times New Roman, Times, serif" font-style="italic" font-weight="700" font-size="24" fill="#0f172a">A</text>
+              <text x="64" y="338" text-anchor="middle" font-family="Times New Roman, Times, serif" font-style="italic" font-weight="700" font-size="24" fill="#0f172a">B</text>
+              <text x="356" y="338" text-anchor="middle" font-family="Times New Roman, Times, serif" font-style="italic" font-weight="700" font-size="24" fill="#0f172a">C</text>
+              <text x="210" y="372" text-anchor="middle" font-family="Times New Roman, Times, serif" font-style="italic" font-weight="700" font-size="24" fill="#b45309">D</text>
+            </svg>
+
+            <div class="sym-controls">
+              <button class="sym-btn active" id="btn-sym-static" onclick="setSymmetryMode('static')">1. SAS Diagram</button>
+              <button class="sym-btn" id="btn-sym-fold" onclick="setSymmetryMode('fold')">2. Fold Along AD (Symmetry)</button>
+              <button class="sym-btn" id="btn-sym-animate" onclick="playSymmetryFold()">&#9654; Replay Fold</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- SLIDE 4: Property -->
+      <div class="slide" id="slide3">
+        <div class="two-col">
+          <div class="text-col">
+            <h2>Property of an Isosceles Triangle</h2>
+            <p class="main-text">If two sides of a triangle are equal, then the angles opposite those sides are equal.</p>
+            <p class="theorem-math math-blue">If AB = AC, then &angle;B = &angle;C</p>
+            <div class="tag-box tag-blue">
+              <span class="tag-label">Geometric Proof Abbreviation</span>
+              base &angle;s, isos. &Delta;
+            </div>
+          </div>
+          <div class="visual-col">
+            <svg width="100%" height="100%" viewBox="0 0 400 400">
+              <polygon points="200,60 60,320 340,320" fill="#ffffff" stroke="#1e293b" stroke-width="5" stroke-linejoin="round"/>
+              <text x="200" y="40" text-anchor="middle" font-weight="700" font-size="28" fill="#0f172a">A</text>
+              <text x="40" y="340" text-anchor="middle" font-weight="700" font-size="28" fill="#0ea5e9">B</text>
+              <text x="360" y="340" text-anchor="middle" font-weight="700" font-size="28" fill="#0ea5e9">C</text>
+              <line x1="110" y1="180" x2="150" y2="200" stroke="#1e293b" stroke-width="6" stroke-linecap="round"/>
+              <line x1="290" y1="180" x2="250" y2="200" stroke="#1e293b" stroke-width="6" stroke-linecap="round"/>
+              <path d="M 115,320 A 55,55 0 0,0 86,270" fill="none" stroke="#0ea5e9" stroke-width="6" stroke-linecap="round"/>
+              <path d="M 285,320 A 55,55 0 0,1 314,270" fill="none" stroke="#0ea5e9" stroke-width="6" stroke-linecap="round"/>
+              <path d="M 145,190 Q 200,210 300,280" class="arrow-path arrow-blue" marker-end="url(#arrowhead-blue)"/>
+              <path d="M 255,190 Q 200,210 100,280" class="arrow-path arrow-blue" marker-end="url(#arrowhead-blue)"/>
+            </svg>
+          </div>
+        </div>
+      </div>
+
+      <!-- SLIDE 5: Formal Proof of the Converse Theorem (Symmetry & AAS Congruence) -->
+      <div class="slide" id="slide4">
+        <div class="two-col">
+          <div class="text-col">
+            <h2 style="font-size: 33px; margin-bottom: 8px;">Formal Proof of the Converse Theorem</h2>
+            <p class="main-text" style="font-size: 17.5px; margin-bottom: 10px;">
+              <strong>Converse Theorem:</strong> In <span class="math-text">&Delta;</span><span class="math-var">ABC</span>, if <span class="math-text">&ang;</span><span class="math-var">B</span> <span class="math-text">=</span> <span class="math-text">&ang;</span><span class="math-var">C</span>, then <span class="math-var">AB</span> <span class="math-text">=</span> <span class="math-var">AC</span>.
+            </p>
+
+            <div class="proof-box" style="background: #fffbeb; border-color: #fde68a;">
+              <strong style="color: #b45309;">Construction (Axis of Symmetry):</strong> Draw the angle bisector <span class="math-var">AD</span> of <span class="math-text">&ang;</span><span class="math-var">BAC</span>, meeting base <span class="math-var">BC</span> at <span class="math-var">D</span>, so that <span class="math-text">&ang;</span><span class="math-var">BAD</span> <span class="math-text">=</span> <span class="math-text">&ang;</span><span class="math-var">CAD</span>.
+            </div>
+
+            <div class="proof-box">
+              <strong style="color: #0f172a;">Proof:</strong> In <span class="math-text">&Delta;</span><span class="math-var">ABD</span> and <span class="math-text">&Delta;</span><span class="math-var">ACD</span>:
+              <table class="proof-table">
+                <thead>
+                  <tr>
+                    <th style="width: 54%;">Statement</th>
+                    <th style="width: 46%;">Reason</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr class="conv-proof-step-row" id="conv-proof-row-0">
+                    <td>1. <span class="math-text">&ang;</span><span class="math-var">B</span> <span class="math-text">=</span> <span class="math-text">&ang;</span><span class="math-var">C</span></td>
+                    <td><span class="reason-pill">Given</span></td>
+                  </tr>
+                  <tr class="conv-proof-step-row" id="conv-proof-row-1">
+                    <td>2. <span class="math-text">&ang;</span><span class="math-var">BAD</span> <span class="math-text">=</span> <span class="math-text">&ang;</span><span class="math-var">CAD</span></td>
+                    <td><span class="reason-pill">By construction</span></td>
+                  </tr>
+                  <tr class="conv-proof-step-row" id="conv-proof-row-2">
+                    <td>3. <span class="math-var">AD</span> <span class="math-text">=</span> <span class="math-var">AD</span></td>
+                    <td><span class="reason-pill">Common side</span></td>
+                  </tr>
+                  <tr class="conv-proof-step-row" id="conv-proof-row-3">
+                    <td>4. <span class="math-text">&Delta;</span><span class="math-var">ABD</span> <span class="math-text">&cong;</span> <span class="math-text">&Delta;</span><span class="math-var">ACD</span></td>
+                    <td><span class="reason-pill red">AAS</span></td>
+                  </tr>
+                  <tr class="conv-proof-step-row" id="conv-proof-row-4">
+                    <td>5. <strong class="math-red">&there4; <span class="math-var">AB</span> <span class="math-text">=</span> <span class="math-var">AC</span></strong></td>
+                    <td><span class="reason-pill red">corr. sides, &cong; &Delta;s</span></td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          <div class="visual-col graph-bg" style="flex-direction: column; padding-bottom: 52px;">
+            <svg id="converse-symmetry-proof-svg" width="100%" height="100%" viewBox="0 0 420 400">
+              <!-- Base triangle shading for left & right halves -->
+              <polygon points="210,55 80,325 210,325" fill="rgba(225, 29, 72, 0.09)" stroke="none"/>
+              <polygon points="210,55 340,325 210,325" fill="rgba(14, 165, 233, 0.07)" stroke="none"/>
+
+              <!-- Animated Reflection / Fold Ghost Half (Left half reflecting across AD onto Right half) -->
+              <g id="conv-sym-fold-group" class="fold-ghost" style="opacity: 0;">
+                <polygon points="210,55 80,325 210,325" fill="rgba(225, 29, 72, 0.24)" stroke="#e11d48" stroke-width="3" stroke-dasharray="6,4"/>
+                <line x1="133" y1="184" x2="157" y2="196" stroke="#e11d48" stroke-width="4" stroke-linecap="round"/>
+              </g>
+
+              <!-- Main Triangle Outline -->
+              <polygon points="210,55 80,325 340,325" fill="none" stroke="#0f172a" stroke-width="3.5" stroke-linejoin="round"/>
+
+              <!-- Axis of Symmetry AD -->
+              <line x1="210" y1="35" x2="210" y2="352" stroke="#d97706" stroke-width="3" stroke-dasharray="8,5"/>
+              <text x="218" y="45" font-family="Inter, sans-serif" font-weight="700" font-size="12" fill="#b45309">Axis of Symmetry</text>
+
+              <!-- Base Angles B and C (Step 1: <B = <C, Given) -->
+              <g id="conv-sym-step-baseangles">
+                <path d="M 124,325 A 44,44 0 0,0 99,285" fill="none" stroke="#0f172a" stroke-width="3.5"/>
+                <path d="M 296,325 A 44,44 0 0,1 321,285" fill="none" stroke="#0f172a" stroke-width="3.5"/>
+                <text x="132" y="309" text-anchor="middle" font-family="Times New Roman, Times, serif" font-style="italic" font-weight="700" font-size="20" fill="#0f172a">b</text>
+                <text x="288" y="309" text-anchor="middle" font-family="Times New Roman, Times, serif" font-style="italic" font-weight="700" font-size="20" fill="#0f172a">b</text>
+              </g>
+
+              <!-- Angle Bisector Arcs at A (Step 2: <BAD = <CAD) -->
+              <g id="conv-sym-step-bisector">
+                <path d="M 191,94 A 43,43 0 0,0 210,98" fill="none" stroke="#d97706" stroke-width="3"/>
+                <path d="M 210,98 A 43,43 0 0,0 229,94" fill="none" stroke="#d97706" stroke-width="3"/>
+                <line x1="198" y1="91" x2="201" y2="103" stroke="#d97706" stroke-width="2.2"/>
+                <line x1="222" y1="91" x2="219" y2="103" stroke="#d97706" stroke-width="2.2"/>
+              </g>
+
+              <!-- Common side AD highlight (Step 3) -->
+              <line id="conv-sym-step-common" x1="210" y1="55" x2="210" y2="325" stroke="#e11d48" stroke-width="5" opacity="0.32"/>
+
+              <!-- Deduced Equal Sides AB = AC tick marks (Step 5) -->
+              <g id="conv-sym-step-sides">
+                <line x1="133" y1="184" x2="157" y2="196" stroke="#e11d48" stroke-width="4.5" stroke-linecap="round"/>
+                <line x1="287" y1="184" x2="263" y2="196" stroke="#e11d48" stroke-width="4.5" stroke-linecap="round"/>
+              </g>
+
+              <!-- Symmetry Reflection Curved Arrows -->
+              <path d="M 135,235 Q 210,205 285,235" class="arrow-path arrow-red" marker-end="url(#arrowhead-red)" marker-start="url(#arrowhead-red)"/>
+
+              <!-- Vertex Labels -->
+              <text x="196" y="46" text-anchor="middle" font-family="Times New Roman, Times, serif" font-style="italic" font-weight="700" font-size="24" fill="#e11d48">A</text>
+              <text x="64" y="338" text-anchor="middle" font-family="Times New Roman, Times, serif" font-style="italic" font-weight="700" font-size="24" fill="#0f172a">B</text>
+              <text x="356" y="338" text-anchor="middle" font-family="Times New Roman, Times, serif" font-style="italic" font-weight="700" font-size="24" fill="#0f172a">C</text>
+              <text x="210" y="372" text-anchor="middle" font-family="Times New Roman, Times, serif" font-style="italic" font-weight="700" font-size="24" fill="#b45309">D</text>
+            </svg>
+
+            <div class="sym-controls">
+              <button class="sym-btn red-hover active" id="btn-conv-sym-static" onclick="setConverseSymmetryMode('static')">1. AAS Diagram</button>
+              <button class="sym-btn red-hover" id="btn-conv-sym-fold" onclick="setConverseSymmetryMode('fold')">2. Fold Along AD (Symmetry)</button>
+              <button class="sym-btn red-hover" id="btn-conv-sym-animate" onclick="playConverseSymmetryFold()">&#9654; Replay Fold</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- SLIDE 6: Converse -->
+      <div class="slide" id="slide5">
+        <div class="two-col">
+          <div class="text-col">
+            <h2>Condition for an Isosceles Triangle <br><span style="font-size:30px; color:#64748b;">(Converse Theorem)</span></h2>
+            <p class="main-text">If two angles of a triangle are equal, then the sides opposite those angles are equal.</p>
+            <p class="theorem-math math-red">If &angle;B = &angle;C, then AB = AC</p>
+            <div class="tag-box tag-red">
+              <span class="tag-label">Geometric Proof Abbreviation</span>
+              sides opp. equal &angle;s
+            </div>
+          </div>
+          <div class="visual-col">
+            <svg width="100%" height="100%" viewBox="0 0 400 400">
+              <polygon points="200,60 60,320 340,320" fill="#ffffff" stroke="#1e293b" stroke-width="5" stroke-linejoin="round"/>
+              <text x="200" y="40" text-anchor="middle" font-weight="700" font-size="28" fill="#e11d48">A</text>
+              <text x="40" y="340" text-anchor="middle" font-weight="700" font-size="28" fill="#1e293b">B</text>
+              <text x="360" y="340" text-anchor="middle" font-weight="700" font-size="28" fill="#1e293b">C</text>
+              <path d="M 115,320 A 55,55 0 0,0 86,270" fill="none" stroke="#1e293b" stroke-width="6" stroke-linecap="round"/>
+              <path d="M 285,320 A 55,55 0 0,1 314,270" fill="none" stroke="#1e293b" stroke-width="6" stroke-linecap="round"/>
+              <line x1="110" y1="180" x2="150" y2="200" stroke="#e11d48" stroke-width="8" stroke-linecap="round"/>
+              <line x1="290" y1="180" x2="250" y2="200" stroke="#e11d48" stroke-width="8" stroke-linecap="round"/>
+              <path d="M 100,280 Q 200,210 250,185" class="arrow-path arrow-red" marker-end="url(#arrowhead-red)"/>
+              <path d="M 300,280 Q 200,210 150,185" class="arrow-path arrow-red" marker-end="url(#arrowhead-red)"/>
+            </svg>
+          </div>
+        </div>
+      </div>
+
+      <!-- SLIDE 7: Comparison -->
+      <div class="slide" id="slide6">
+        <div style="width: 100%; height: 100%; display: flex; flex-direction: column;">
+          <h2 style="text-align: center; margin-bottom: 20px;">Side-by-Side Proof Comparison</h2>
+          <div class="comparison-grid">
+            <div class="comp-card">
+              <h3>Property: <strong style="color:#0284c7;">Sides &rarr; Angles</strong></h3>
+              <svg width="210" height="210" viewBox="0 0 400 400" style="margin-bottom: 18px;">
+                <polygon points="200,60 60,320 340,320" fill="#ffffff" stroke="#1e293b" stroke-width="5" stroke-linejoin="round"/>
+                <line x1="110" y1="180" x2="150" y2="200" stroke="#1e293b" stroke-width="6" stroke-linecap="round"/>
+                <line x1="290" y1="180" x2="250" y2="200" stroke="#1e293b" stroke-width="6" stroke-linecap="round"/>
+                <path d="M 115,320 A 55,55 0 0,0 86,270" fill="none" stroke="#0ea5e9" stroke-width="6" stroke-linecap="round"/>
+                <path d="M 285,320 A 55,55 0 0,1 314,270" fill="none" stroke="#0ea5e9" stroke-width="6" stroke-linecap="round"/>
+                <path d="M 145,190 Q 200,210 300,280" class="arrow-path arrow-blue" marker-end="url(#arrowhead-blue)"/>
+                <path d="M 255,190 Q 200,210 100,280" class="arrow-path arrow-blue" marker-end="url(#arrowhead-blue)"/>
+              </svg>
+              <div class="tag-box tag-blue" style="font-size: 16px; padding: 12px 18px; align-self: center;">
+                <span class="tag-label">Abbreviation</span>
+                base &angle;s, isos. &Delta;
+              </div>
+            </div>
+
+            <div class="comp-card">
+              <h3>Converse: <strong style="color:#be123c;">Angles &rarr; Sides</strong></h3>
+              <svg width="210" height="210" viewBox="0 0 400 400" style="margin-bottom: 18px;">
+                <polygon points="200,60 60,320 340,320" fill="#ffffff" stroke="#1e293b" stroke-width="5" stroke-linejoin="round"/>
+                <path d="M 115,320 A 55,55 0 0,0 86,270" fill="none" stroke="#1e293b" stroke-width="6" stroke-linecap="round"/>
+                <path d="M 285,320 A 55,55 0 0,1 314,270" fill="none" stroke="#1e293b" stroke-width="6" stroke-linecap="round"/>
+                <line x1="110" y1="180" x2="150" y2="200" stroke="#e11d48" stroke-width="8" stroke-linecap="round"/>
+                <line x1="290" y1="180" x2="250" y2="200" stroke="#e11d48" stroke-width="8" stroke-linecap="round"/>
+                <path d="M 100,280 Q 200,210 250,185" class="arrow-path arrow-red" marker-end="url(#arrowhead-red)"/>
+                <path d="M 300,280 Q 200,210 150,185" class="arrow-path arrow-red" marker-end="url(#arrowhead-red)"/>
+              </svg>
+              <div class="tag-box tag-red" style="font-size: 16px; padding: 12px 18px; align-self: center;">
+                <span class="tag-label">Abbreviation</span>
+                sides opp. equal &angle;s
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ================= PART 2: INTERACTIVE QUIZ (7 - 27) ================= -->
+
+      <!-- QUIZ Q1 (Slide 8) -->
+      <div class="slide" id="slide7">
+        <div class="two-col">
+          <div class="text-col">
+            <div class="quiz-badge">Part 2 &bull; Question 1 of 20 (10 Marks)</div>
+            <div class="quiz-question" id="q0-question"></div>
+            <div class="mc-grid-2x2" id="q0-options"></div>
+            <div class="quiz-feedback" id="q0-feedback"></div>
+          </div>
+          <div class="visual-col" style="background: #ffffff;" id="q0-svg"></div>
+        </div>
+      </div>
+
+      <!-- QUIZ Q2 (Slide 9) -->
+      <div class="slide" id="slide8">
+        <div class="two-col">
+          <div class="text-col">
+            <div class="quiz-badge">Part 2 &bull; Question 2 of 20 (10 Marks)</div>
+            <div class="quiz-question" id="q1-question"></div>
+            <div class="mc-grid-2x2" id="q1-options"></div>
+            <div class="quiz-feedback" id="q1-feedback"></div>
+          </div>
+          <div class="visual-col" style="background: #ffffff;" id="q1-svg"></div>
+        </div>
+      </div>
+
+      <!-- QUIZ Q3 (Slide 10) -->
+      <div class="slide" id="slide9">
+        <div class="two-col">
+          <div class="text-col">
+            <div class="quiz-badge">Part 2 &bull; Question 3 of 20 (10 Marks)</div>
+            <div class="quiz-question" id="q2-question"></div>
+            <div class="mc-grid-2x2" id="q2-options"></div>
+            <div class="quiz-feedback" id="q2-feedback"></div>
+          </div>
+          <div class="visual-col" style="background: #ffffff;" id="q2-svg"></div>
+        </div>
+      </div>
+
+      <!-- QUIZ Q4 (Slide 11) -->
+      <div class="slide" id="slide10">
+        <div class="two-col">
+          <div class="text-col">
+            <div class="quiz-badge ext-badge">Part 2 &bull; Question 4 of 20 (10 Marks)</div>
+            <div class="quiz-question" id="q3-question"></div>
+            <div class="mc-grid-2x2" id="q3-options"></div>
+            <div class="quiz-feedback" id="q3-feedback"></div>
+          </div>
+          <div class="visual-col" style="background: #ffffff;" id="q3-svg"></div>
+        </div>
+      </div>
+
+      <!-- QUIZ Q5 (Slide 12) -->
+      <div class="slide" id="slide11">
+        <div class="two-col">
+          <div class="text-col">
+            <div class="quiz-badge ext-badge">Part 2 &bull; Question 5 of 20 (10 Marks)</div>
+            <div class="quiz-question" id="q4-question"></div>
+            <div class="mc-grid-2x2" id="q4-options"></div>
+            <div class="quiz-feedback" id="q4-feedback"></div>
+          </div>
+          <div class="visual-col" style="background: #ffffff;" id="q4-svg"></div>
+        </div>
+      </div>
+
+      <!-- QUIZ Q6 (Slide 13) -->
+      <div class="slide" id="slide12">
+        <div class="two-col">
+          <div class="text-col">
+            <div class="quiz-badge ext-badge">Part 2 &bull; Question 6 of 20 (10 Marks)</div>
+            <div class="quiz-question" id="q5-question"></div>
+            <div class="mc-grid-2x2" id="q5-options"></div>
+            <div class="quiz-feedback" id="q5-feedback"></div>
+          </div>
+          <div class="visual-col" style="background: #ffffff;" id="q5-svg"></div>
+        </div>
+      </div>
+
+      <!-- QUIZ Q7 (Slide 14) -->
+      <div class="slide" id="slide13">
+        <div class="two-col">
+          <div class="text-col">
+            <div class="quiz-badge conn-badge">Part 2 &bull; Question 7 of 20 (10 Marks)</div>
+            <div class="quiz-question" id="q6-question"></div>
+            <div class="mc-grid-2x2" id="q6-options"></div>
+            <div class="quiz-feedback" id="q6-feedback"></div>
+          </div>
+          <div class="visual-col" style="background: #ffffff;" id="q6-svg"></div>
+        </div>
+      </div>
+
+      <!-- QUIZ Q8 (Slide 15) -->
+      <div class="slide" id="slide14">
+        <div class="two-col">
+          <div class="text-col">
+            <div class="quiz-badge conn-badge">Part 2 &bull; Question 8 of 20 (10 Marks)</div>
+            <div class="quiz-question" id="q7-question"></div>
+            <div class="mc-grid-2x2" id="q7-options"></div>
+            <div class="quiz-feedback" id="q7-feedback"></div>
+          </div>
+          <div class="visual-col" style="background: #ffffff;" id="q7-svg"></div>
+        </div>
+      </div>
+
+      <!-- QUIZ Q9 (Slide 16) -->
+      <div class="slide" id="slide15">
+        <div class="two-col">
+          <div class="text-col">
+            <div class="quiz-badge conn-badge">Part 2 &bull; Question 9 of 20 (10 Marks)</div>
+            <div class="quiz-question" id="q8-question"></div>
+            <div class="mc-grid-2x2" id="q8-options"></div>
+            <div class="quiz-feedback" id="q8-feedback"></div>
+          </div>
+          <div class="visual-col" style="background: #ffffff;" id="q8-svg"></div>
+        </div>
+      </div>
+
+      <!-- QUIZ Q10 (Slide 17) -->
+      <div class="slide" id="slide16">
+        <div class="two-col">
+          <div class="text-col">
+            <div class="quiz-badge chal-badge">Part 2 &bull; Question 10 of 20 (10 Marks)</div>
+            <div class="quiz-question" id="q9-question"></div>
+            <div class="mc-grid-2x2" id="q9-options"></div>
+            <div class="quiz-feedback" id="q9-feedback"></div>
+          </div>
+          <div class="visual-col" style="background: #ffffff;" id="q9-svg"></div>
+        </div>
+      </div>
+
+      <!-- QUIZ Q11 (Slide 18) -->
+      <div class="slide" id="slide17">
+        <div class="two-col">
+          <div class="text-col">
+            <div class="quiz-badge chal-badge">Part 2 &bull; Question 11 of 20 (10 Marks)</div>
+            <div class="quiz-question" id="q10-question"></div>
+            <div class="mc-grid-2x2" id="q10-options"></div>
+            <div class="quiz-feedback" id="q10-feedback"></div>
+          </div>
+          <div class="visual-col" style="background: #ffffff;" id="q10-svg"></div>
+        </div>
+      </div>
+
+      <!-- QUIZ Q12 (Slide 19) -->
+      <div class="slide" id="slide18">
+        <div class="two-col">
+          <div class="text-col">
+            <div class="quiz-badge chal-badge">Part 2 &bull; Question 12 of 20 (10 Marks)</div>
+            <div class="quiz-question" id="q11-question"></div>
+            <div class="mc-grid-2x2" id="q11-options"></div>
+            <div class="quiz-feedback" id="q11-feedback"></div>
+          </div>
+          <div class="visual-col" style="background: #ffffff;" id="q11-svg"></div>
+        </div>
+      </div>
+
+      <!-- QUIZ Q13 (Slide 20) -->
+      <div class="slide" id="slide19">
+        <div class="two-col">
+          <div class="text-col">
+            <div class="quiz-badge para-badge">Part 2 &bull; Question 13 of 20 (10 Marks)</div>
+            <div class="quiz-question" id="q12-question"></div>
+            <div class="mc-grid-2x2" id="q12-options"></div>
+            <div class="quiz-feedback" id="q12-feedback"></div>
+          </div>
+          <div class="visual-col" style="background: #ffffff;" id="q12-svg"></div>
+        </div>
+      </div>
+
+      <!-- QUIZ Q14 (Slide 21) -->
+      <div class="slide" id="slide20">
+        <div class="two-col">
+          <div class="text-col">
+            <div class="quiz-badge para-badge">Part 2 &bull; Question 14 of 20 (10 Marks)</div>
+            <div class="quiz-question" id="q13-question"></div>
+            <div class="mc-grid-2x2" id="q13-options"></div>
+            <div class="quiz-feedback" id="q13-feedback"></div>
+          </div>
+          <div class="visual-col" style="background: #ffffff;" id="q13-svg"></div>
+        </div>
+      </div>
+
+      <!-- QUIZ Q15 (Slide 22) -->
+      <div class="slide" id="slide21">
+        <div class="two-col">
+          <div class="text-col">
+            <div class="quiz-badge para-badge">Part 2 &bull; Question 15 of 20 (10 Marks)</div>
+            <div class="quiz-question" id="q14-question"></div>
+            <div class="mc-grid-2x2" id="q14-options"></div>
+            <div class="quiz-feedback" id="q14-feedback"></div>
+          </div>
+          <div class="visual-col" style="background: #ffffff;" id="q14-svg"></div>
+        </div>
+      </div>
+
+      <!-- QUIZ Q16 (Slide 23) -->
+      <div class="slide" id="slide22">
+        <div class="two-col">
+          <div class="text-col">
+            <div class="quiz-badge para-badge">Part 2 &bull; Question 16 of 20 (10 Marks)</div>
+            <div class="quiz-question" id="q15-question"></div>
+            <div class="mc-grid-2x2" id="q15-options"></div>
+            <div class="quiz-feedback" id="q15-feedback"></div>
+          </div>
+          <div class="visual-col" style="background: #ffffff;" id="q15-svg"></div>
+        </div>
+      </div>
+
+      <!-- QUIZ Q17 (Slide 24) -->
+      <div class="slide" id="slide23">
+        <div class="two-col">
+          <div class="text-col">
+            <div class="quiz-badge para-badge">Part 2 &bull; Question 17 of 20 (10 Marks)</div>
+            <div class="quiz-question" id="q16-question"></div>
+            <div class="mc-grid-2x2" id="q16-options"></div>
+            <div class="quiz-feedback" id="q16-feedback"></div>
+          </div>
+          <div class="visual-col" style="background: #ffffff;" id="q16-svg"></div>
+        </div>
+      </div>
+
+      <!-- QUIZ Q18 (Slide 25) -->
+      <div class="slide" id="slide24">
+        <div class="two-col">
+          <div class="text-col">
+            <div class="quiz-badge chal-badge">Part 2 &bull; Question 18 of 20 (10 Marks)</div>
+            <div class="quiz-question" id="q17-question"></div>
+            <div class="mc-grid-2x2" id="q17-options"></div>
+            <div class="quiz-feedback" id="q17-feedback"></div>
+          </div>
+          <div class="visual-col" style="background: #ffffff;" id="q17-svg"></div>
+        </div>
+      </div>
+
+      <!-- QUIZ Q19 (Slide 26) -->
+      <div class="slide" id="slide25">
+        <div class="two-col">
+          <div class="text-col">
+            <div class="quiz-badge chal-badge">Part 2 &bull; Question 19 of 20 (10 Marks)</div>
+            <div class="quiz-question" id="q18-question"></div>
+            <div class="mc-grid-2x2" id="q18-options"></div>
+            <div class="quiz-feedback" id="q18-feedback"></div>
+          </div>
+          <div class="visual-col" style="background: #ffffff;" id="q18-svg"></div>
+        </div>
+      </div>
+
+      <!-- QUIZ Q20 (Slide 27) -->
+      <div class="slide" id="slide26">
+        <div class="two-col">
+          <div class="text-col">
+            <div class="quiz-badge chal-badge">Part 2 &bull; Question 20 of 20 (10 Marks)</div>
+            <div class="quiz-question" id="q19-question"></div>
+            <div class="mc-grid-2x2" id="q19-options"></div>
+            <div class="quiz-feedback" id="q19-feedback"></div>
+          </div>
+          <div class="visual-col" style="background: #ffffff;" id="q19-svg"></div>
+        </div>
+      </div>
+
+      <!-- QUIZ SUMMARY (Slide 28) -->
+      <div class="slide" id="slide27">
+        <div class="summary-card">
+          <div class="quiz-badge" style="align-self: center;">Part 2 &bull; Results Summary</div>
+          <h2 style="margin-bottom: 12px;">Practice Complete!</h2>
+          <p class="main-text" id="quiz-summary-msg" style="max-width: 720px; margin-bottom: 16px;">Answer all 20 questions in Part 2 (10 marks each) to see your final score.</p>
+          
+          <div class="score-ring">
+            <div class="score-num" id="score-value">0</div>
+            <div class="score-den">out of 200</div>
+          </div>
+
+          <div class="summary-highscore-badge" id="summary-highscore">All-Time High Score: 0 / 200</div>
+
+          <div style="display: flex; gap: 16px;">
+            <button class="retry-btn" onclick="resetQuiz()">Retake Quiz</button>
+            <button class="retry-btn" style="background: #0f172a;" onclick="goToSlide(0)">Review Part 1 Lesson</button>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <div class="controls">
+      <button class="nav-btn btn-prev" id="btn-prev" onclick="navigate(-1)" disabled>
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg>
+        Previous
+      </button>
+
+      <div class="dots-wrapper">
+        <div class="dots" id="dots-container">
+          <!-- Part 1: Lesson Slides (0 - 6) -->
+          <span class="dot active" title="Part 1 - Slide 1: Anatomy" onclick="goToSlide(0)"></span>
+          <span class="dot" title="Part 1 - Slide 2: Worked Example" onclick="goToSlide(1)"></span>
+          <span class="dot" title="Part 1 - Slide 3: Formal Proof" onclick="goToSlide(2)"></span>
+          <span class="dot" title="Part 1 - Slide 4: Property" onclick="goToSlide(3)"></span>
+          <span class="dot" title="Part 1 - Slide 5: Formal Proof of Converse" onclick="goToSlide(4)"></span>
+          <span class="dot" title="Part 1 - Slide 6: Converse" onclick="goToSlide(5)"></span>
+          <span class="dot" title="Part 1 - Slide 7: Comparison" onclick="goToSlide(6)"></span>
+          <span class="dot-divider"></span>
+          <!-- Part 2: Quiz Slides (7 - 27) -->
+          <span class="dot quiz-dot" title="Part 2 - Question 1" onclick="goToSlide(7)"></span>
+          <span class="dot quiz-dot" title="Part 2 - Question 2" onclick="goToSlide(8)"></span>
+          <span class="dot quiz-dot" title="Part 2 - Question 3" onclick="goToSlide(9)"></span>
+          <span class="dot quiz-dot" title="Part 2 - Question 4" onclick="goToSlide(10)"></span>
+          <span class="dot quiz-dot" title="Part 2 - Question 5" onclick="goToSlide(11)"></span>
+          <span class="dot quiz-dot" title="Part 2 - Question 6" onclick="goToSlide(12)"></span>
+          <span class="dot quiz-dot" title="Part 2 - Question 7" onclick="goToSlide(13)"></span>
+          <span class="dot quiz-dot" title="Part 2 - Question 8" onclick="goToSlide(14)"></span>
+          <span class="dot quiz-dot" title="Part 2 - Question 9" onclick="goToSlide(15)"></span>
+          <span class="dot quiz-dot" title="Part 2 - Question 10" onclick="goToSlide(16)"></span>
+          <span class="dot quiz-dot" title="Part 2 - Question 11" onclick="goToSlide(17)"></span>
+          <span class="dot quiz-dot" title="Part 2 - Question 12" onclick="goToSlide(18)"></span>
+          <span class="dot quiz-dot" title="Part 2 - Question 13" onclick="goToSlide(19)"></span>
+          <span class="dot quiz-dot" title="Part 2 - Question 14" onclick="goToSlide(20)"></span>
+          <span class="dot quiz-dot" title="Part 2 - Question 15" onclick="goToSlide(21)"></span>
+          <span class="dot quiz-dot" title="Part 2 - Question 16" onclick="goToSlide(22)"></span>
+          <span class="dot quiz-dot" title="Part 2 - Question 17" onclick="goToSlide(23)"></span>
+          <span class="dot quiz-dot" title="Part 2 - Question 18" onclick="goToSlide(24)"></span>
+          <span class="dot quiz-dot" title="Part 2 - Question 19" onclick="goToSlide(25)"></span>
+          <span class="dot quiz-dot" title="Part 2 - Question 20" onclick="goToSlide(26)"></span>
+          <span class="dot quiz-dot" title="Part 2 - Results" onclick="goToSlide(27)"></span>
+        </div>
+      </div>
+
+      <button class="nav-btn btn-next" id="btn-next" onclick="navigate(1)">
+        <span id="btn-next-label">Next</span>
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18l6-6-6-6"/></svg>
+      </button>
+    </div>
+  </div>
+
+    <script>
+    let currentSlide = 0;
+    const slides = document.querySelectorAll('.slide');
+    const dots = document.querySelectorAll('.dot');
+    const btnPrev = document.getElementById('btn-prev');
+    const btnNext = document.getElementById('btn-next');
+    const btnNextLabel = document.getElementById('btn-next-label');
+    const tabPart1 = document.getElementById('tab-part1');
+    const tabPart2 = document.getElementById('tab-part2');
+    const tracker = document.getElementById('slide-tracker');
+
+    const MARKS_PER_QUESTION = 10;
+    const MAX_SCORE = 200;
+    let highScore = 0; // Resets to 0 for every new start of the program
+
+    // Helper utilities for MathType formatting & parametric generation
+    const mv = (s) => `<span class="math-var">${s}</span>`;
+    const mt = (s) => `<span class="math-text">${s}</span>`;
+    const deg = (n) => `<span class="math-text">${n}&deg;</span>`;
+    const num = (n) => `<span class="math-text">${n}</span>`;
+
+    function pickNewParam(pool, prevKey) {
+      if (pool.length <= 1) return pool[0];
+      const candidates = pool.filter(item => JSON.stringify(item) !== prevKey);
+      const list = candidates.length > 0 ? candidates : pool;
+      return list[Math.floor(Math.random() * list.length)];
+    }
+
+    function buildOptions(correctVal, distractors, isDegree) {
+      // Ensure 4 unique values, sorted numerically for clean exam-style presentation
+      const set = new Set([correctVal]);
+      for (const d of distractors) {
+        if (d > 0 && d !== correctVal) set.add(d);
+        if (set.size === 4) break;
+      }
+      let fallback = 12;
+      while (set.size < 4) {
+        if (fallback !== correctVal) set.add(fallback);
+        fallback += 6;
+      }
+      const vals = Array.from(set).sort((a, b) => a - b);
+      const correctIdx = vals.indexOf(correctVal);
+      const formatted = vals.map(v => isDegree ? deg(v) : num(v));
+      return { options: formatted, correct: correctIdx };
+    }
+
+    // 20 Parametric Question Generators (each returns { key, question, options, correct, explanation, svg })
+    const questionGenerators = [
+      // Q1: Isosceles triangle AB = AC, vertex angle BAC = a, find base angle x
+      (prevKey, useInitial) => {
+        const pool = [
+          { a: 54 }, { a: 42 }, { a: 48 }, { a: 64 }, { a: 72 }, { a: 36 }, { a: 80 }, { a: 68 }
+        ];
+        const p = useInitial ? pool[0] : pickNewParam(pool, prevKey);
+        const x = (180 - p.a) / 2;
+        const { options, correct } = buildOptions(x, [p.a, 180 - p.a, x + 9, 90 - p.a / 2 + 12], true);
+        return {
+          key: JSON.stringify(p),
+          question: `<span style="font-weight: 800; margin-right: 6px;">1.</span>In the figure, ${mt('&Delta;')}${mv('ABC')} is an isosceles triangle with ${mv('AB')} ${mt('=')} ${mv('AC')} and ${mt('&ang;')}${mv('BAC')} ${mt(`= ${p.a}&deg;`)}. Find ${mv('x')}.`,
+          options,
+          correct,
+          explanation: `Since ${mv('AB')} = ${mv('AC')}, ${mt('&ang;')}${mv('ABC')} = ${mt('&ang;')}${mv('ACB')} = ${mv('x')} (base ${mt('&ang;')}s, isos. ${mt('&Delta;')}). By ${mt('&ang;')} sum of ${mt('&Delta;')}, ${p.a}&deg; + ${mv('x')} + ${mv('x')} = 180&deg; &rArr; 2${mv('x')} = ${180 - p.a}&deg; &rArr; ${mv('x')} = ${x}&deg;.`,
+          svg: `<svg width="100%" height="100%" viewBox="0 0 400 400">
+            <polygon points="200,55 75,330 325,330" fill="none" stroke="#0f172a" stroke-width="2.5" stroke-linejoin="round"/>
+            <line x1="127" y1="188" x2="148" y2="197" stroke="#0f172a" stroke-width="2.5"/>
+            <line x1="273" y1="188" x2="252" y2="197" stroke="#0f172a" stroke-width="2.5"/>
+            <path d="M 182,94 A 43,43 0 0,0 218,94" fill="none" stroke="#0f172a" stroke-width="2"/>
+            <text x="200" y="122" text-anchor="middle" font-family="Times New Roman, Times, serif" font-size="22" fill="#0f172a">${p.a}&deg;</text>
+            <path d="M 120,330 A 45,45 0 0,0 94,289" fill="none" stroke="#0f172a" stroke-width="2"/>
+            <text x="132" y="315" text-anchor="middle" font-family="Times New Roman, Times, serif" font-style="italic" font-size="23" fill="#0f172a">x</text>
+            <text x="200" y="42" text-anchor="middle" font-family="Times New Roman, Times, serif" font-style="italic" font-size="24" fill="#0f172a">A</text>
+            <text x="58" y="344" text-anchor="middle" font-family="Times New Roman, Times, serif" font-style="italic" font-size="24" fill="#0f172a">B</text>
+            <text x="342" y="344" text-anchor="middle" font-family="Times New Roman, Times, serif" font-style="italic" font-size="24" fill="#0f172a">C</text>
+          </svg>`
+        };
+      },
+
+      // Q2: PQ = QR, base angle QPR = b, find vertex angle y
+      (prevKey, useInitial) => {
+        const pool = [
+          { b: 64 }, { b: 58 }, { b: 68 }, { b: 71 }, { b: 54 }, { b: 62 }, { b: 74 }, { b: 66 }
+        ];
+        const p = useInitial ? pool[0] : pickNewParam(pool, prevKey);
+        const y = 180 - 2 * p.b;
+        const { options, correct } = buildOptions(y, [p.b, 90 - p.b, 180 - p.b, y + 12], true);
+        return {
+          key: JSON.stringify(p),
+          question: `<span style="font-weight: 800; margin-right: 6px;">2.</span>In the figure, ${mv('PQ')} ${mt('=')} ${mv('QR')} and ${mt('&ang;')}${mv('QPR')} ${mt(`= ${p.b}&deg;`)}. Find ${mv('y')}.`,
+          options,
+          correct,
+          explanation: `Since ${mv('PQ')} = ${mv('QR')}, ${mt('&ang;')}${mv('QRP')} = ${mt('&ang;')}${mv('QPR')} = ${p.b}&deg; (base ${mt('&ang;')}s, isos. ${mt('&Delta;')}). By ${mt('&ang;')} sum of ${mt('&Delta;')}, ${mv('y')} = 180&deg; &minus; ${p.b}&deg; &minus; ${p.b}&deg; = ${y}&deg;.`,
+          svg: `<svg width="100%" height="100%" viewBox="0 0 400 400">
+            <polygon points="140,330 90,90 335,140" fill="none" stroke="#0f172a" stroke-width="2.5" stroke-linejoin="round"/>
+            <line x1="104" y1="212" x2="126" y2="208" stroke="#0f172a" stroke-width="2.5"/>
+            <line x1="215" y1="104" x2="210" y2="126" stroke="#0f172a" stroke-width="2.5"/>
+            <path d="M 131,286 A 45,45 0 0,1 172,299" fill="none" stroke="#0f172a" stroke-width="2"/>
+            <text x="166" y="275" text-anchor="middle" font-family="Times New Roman, Times, serif" font-size="22" fill="#0f172a">${p.b}&deg;</text>
+            <path d="M 99,134 A 45,45 0 0,0 134,99" fill="none" stroke="#0f172a" stroke-width="2"/>
+            <text x="133" y="138" text-anchor="middle" font-family="Times New Roman, Times, serif" font-style="italic" font-size="23" fill="#0f172a">y</text>
+            <text x="75" y="82" text-anchor="middle" font-family="Times New Roman, Times, serif" font-style="italic" font-size="24" fill="#0f172a">Q</text>
+            <text x="132" y="354" text-anchor="middle" font-family="Times New Roman, Times, serif" font-style="italic" font-size="24" fill="#0f172a">P</text>
+            <text x="352" y="146" text-anchor="middle" font-family="Times New Roman, Times, serif" font-style="italic" font-size="24" fill="#0f172a">R</text>
+          </svg>`
+        };
+      },
+
+      // Q3: Algebraic interior angles: AB = AC, <ABC = (c1*z + d1), <BAC = (z + d2)
+      (prevKey, useInitial) => {
+        const pool = [
+          { c1: 2, d1: 15, d2: 30, z: 24 },
+          { c1: 2, d1: 10, d2: 40, z: 24 },
+          { c1: 3, d1: 5,  d2: 30, z: 20 },
+          { c1: 2, d1: 20, d2: 15, z: 25 },
+          { c1: 3, d1: 12, d2: 16, z: 20 },
+          { c1: 2, d1: 18, d2: 24, z: 24 },
+          { c1: 2, d1: 12, d2: 36, z: 24 }
+        ];
+        const p = useInitial ? pool[0] : pickNewParam(pool, prevKey);
+        const totalCoeff = 2 * p.c1 + 1;
+        const totalConst = 2 * p.d1 + p.d2;
+        const rhs = 180 - totalConst;
+        const { options, correct } = buildOptions(p.z, [p.z - 6, p.z + 6, p.z + 12, Math.round((180 - p.d1 - p.d2) / (p.c1 + 1))], false);
+        return {
+          key: JSON.stringify(p),
+          question: `<span style="font-weight: 800; margin-right: 6px;">3.</span>In the figure, ${mv('AB')} ${mt('=')} ${mv('AC')}, ${mt('&ang;')}${mv('ABC')} ${mt(`= (${p.c1}`)}${mv('z')}${mt(` + ${p.d1})&deg;`)}, and ${mt('&ang;')}${mv('BAC')} ${mt('= (')}${mv('z')}${mt(` + ${p.d2})&deg;`)}. Find ${mv('z')}.`,
+          options,
+          correct,
+          explanation: `Since ${mv('AB')} = ${mv('AC')}, ${mt('&ang;')}${mv('ACB')} = ${mt('&ang;')}${mv('ABC')} = (${p.c1}${mv('z')} + ${p.d1})&deg;. By ${mt('&ang;')} sum of ${mt('&Delta;')}: (${p.c1}${mv('z')} + ${p.d1}) + (${p.c1}${mv('z')} + ${p.d1}) + (${mv('z')} + ${p.d2}) = 180 &rArr; ${totalCoeff}${mv('z')} + ${totalConst} = 180 &rArr; ${totalCoeff}${mv('z')} = ${rhs} &rArr; ${mv('z')} = ${p.z}.`,
+          svg: `<svg width="100%" height="100%" viewBox="0 0 400 400">
+            <polygon points="200,55 65,330 335,330" fill="none" stroke="#0f172a" stroke-width="2.5" stroke-linejoin="round"/>
+            <line x1="122" y1="188" x2="143" y2="197" stroke="#0f172a" stroke-width="2.5"/>
+            <line x1="278" y1="188" x2="257" y2="197" stroke="#0f172a" stroke-width="2.5"/>
+            <path d="M 181,93 A 42,42 0 0,0 219,93" fill="none" stroke="#0f172a" stroke-width="2"/>
+            <text x="200" y="122" text-anchor="middle" font-family="Times New Roman, Times, serif" font-size="20" fill="#0f172a">
+              (<tspan font-style="italic">z</tspan> + ${p.d2})&deg;
+            </text>
+            <path d="M 110,330 A 45,45 0 0,0 85,290" fill="none" stroke="#0f172a" stroke-width="2"/>
+            <text x="155" y="314" text-anchor="middle" font-family="Times New Roman, Times, serif" font-size="20" fill="#0f172a">
+              (${p.c1}<tspan font-style="italic">z</tspan> + ${p.d1})&deg;
+            </text>
+            <text x="200" y="42" text-anchor="middle" font-family="Times New Roman, Times, serif" font-style="italic" font-size="24" fill="#0f172a">A</text>
+            <text x="48" y="344" text-anchor="middle" font-family="Times New Roman, Times, serif" font-style="italic" font-size="24" fill="#0f172a">B</text>
+            <text x="352" y="344" text-anchor="middle" font-family="Times New Roman, Times, serif" font-style="italic" font-size="24" fill="#0f172a">C</text>
+          </svg>`
+        };
+      },
+
+      // Q4: BCD straight line, AB = AC, <BAC = a, find exterior angle p = <ACD
+      (prevKey, useInitial) => {
+        const pool = [
+          { a: 48 }, { a: 40 }, { a: 52 }, { a: 56 }, { a: 64 }, { a: 36 }, { a: 70 }, { a: 44 }
+        ];
+        const p = useInitial ? pool[0] : pickNewParam(pool, prevKey);
+        const base = (180 - p.a) / 2;
+        const ans = 180 - base;
+        const { options, correct } = buildOptions(ans, [base, 180 - p.a, ans + 10, base + p.a - 10], true);
+        return {
+          key: JSON.stringify(p),
+          question: `<span style="font-weight: 800; margin-right: 6px;">4.</span>In the figure, ${mv('BCD')} is a straight line. If ${mv('AB')} ${mt('=')} ${mv('AC')} and ${mt('&ang;')}${mv('BAC')} ${mt(`= ${p.a}&deg;`)}, find ${mv('p')}.`,
+          options,
+          correct,
+          explanation: `Since ${mv('AB')} = ${mv('AC')}, ${mt('&ang;')}${mv('ABC')} = ${mt('&ang;')}${mv('ACB')} = (180&deg; &minus; ${p.a}&deg;) &divide; 2 = ${base}&deg;. By ext. ${mt('&ang;')} of ${mt('&Delta;')} (or adj. ${mt('&ang;')}s on st. line ${mv('BCD')}), ${mv('p')} = 180&deg; &minus; ${base}&deg; = ${ans}&deg;.`,
+          svg: `<svg width="100%" height="100%" viewBox="0 0 420 400">
+            <polygon points="155,60 50,310 260,310" fill="none" stroke="#0f172a" stroke-width="2.5" stroke-linejoin="round"/>
+            <line x1="260" y1="310" x2="385" y2="310" stroke="#0f172a" stroke-width="2.5" stroke-linecap="round"/>
+            <line x1="92" y1="181" x2="113" y2="190" stroke="#0f172a" stroke-width="2.5"/>
+            <line x1="218" y1="181" x2="197" y2="190" stroke="#0f172a" stroke-width="2.5"/>
+            <path d="M 138,100 A 43,43 0 0,0 172,100" fill="none" stroke="#0f172a" stroke-width="2"/>
+            <text x="155" y="130" text-anchor="middle" font-family="Times New Roman, Times, serif" font-size="22" fill="#0f172a">${p.a}&deg;</text>
+            <path d="M 244,273 A 40,40 0 0,1 300,310" fill="none" stroke="#0f172a" stroke-width="2"/>
+            <text x="294" y="276" text-anchor="middle" font-family="Times New Roman, Times, serif" font-style="italic" font-size="23" fill="#0f172a">p</text>
+            <text x="155" y="45" text-anchor="middle" font-family="Times New Roman, Times, serif" font-style="italic" font-size="24" fill="#0f172a">A</text>
+            <text x="36" y="324" text-anchor="middle" font-family="Times New Roman, Times, serif" font-style="italic" font-size="24" fill="#0f172a">B</text>
+            <text x="260" y="338" text-anchor="middle" font-family="Times New Roman, Times, serif" font-style="italic" font-size="24" fill="#0f172a">C</text>
+            <text x="396" y="317" text-anchor="middle" font-family="Times New Roman, Times, serif" font-style="italic" font-size="24" fill="#0f172a">D</text>
+          </svg>`
+        };
+      },
+
+      // Q5: BA produced to D, AB = AC, <ABC = b, find exterior vertex angle q = <DAC
+      (prevKey, useInitial) => {
+        const pool = [
+          { b: 58 }, { b: 52 }, { b: 64 }, { b: 68 }, { b: 54 }, { b: 72 }, { b: 48 }, { b: 62 }
+        ];
+        const p = useInitial ? pool[0] : pickNewParam(pool, prevKey);
+        const vertex = 180 - 2 * p.b;
+        const ans = 2 * p.b;
+        const { options, correct } = buildOptions(ans, [p.b, vertex, 180 - p.b, ans + 8], true);
+        return {
+          key: JSON.stringify(p),
+          question: `<span style="font-weight: 800; margin-right: 6px;">5.</span>In the figure, ${mv('BA')} is produced to ${mv('D')}. If ${mv('AB')} ${mt('=')} ${mv('AC')} and ${mt('&ang;')}${mv('ABC')} ${mt(`= ${p.b}&deg;`)}, find ${mv('q')}.`,
+          options,
+          correct,
+          explanation: `Since ${mv('AB')} = ${mv('AC')}, ${mt('&ang;')}${mv('ACB')} = ${mt('&ang;')}${mv('ABC')} = ${p.b}&deg;. By ext. ${mt('&ang;')} of ${mt('&Delta;')}${mv('ABC')}, ${mv('q')} = ${mt('&ang;')}${mv('ABC')} + ${mt('&ang;')}${mv('ACB')} = ${p.b}&deg; + ${p.b}&deg; = ${ans}&deg;.`,
+          svg: `<svg width="100%" height="100%" viewBox="0 0 420 400">
+            <polygon points="190,155 70,335 365,335" fill="none" stroke="#0f172a" stroke-width="2.5" stroke-linejoin="round"/>
+            <line x1="190" y1="155" x2="265" y2="42" stroke="#0f172a" stroke-width="2.5" stroke-linecap="round"/>
+            <line x1="120" y1="239" x2="140" y2="252" stroke="#0f172a" stroke-width="2.5"/>
+            <line x1="286" y1="237" x2="269" y2="254" stroke="#0f172a" stroke-width="2.5"/>
+            <path d="M 116,335 A 46,46 0 0,0 96,297" fill="none" stroke="#0f172a" stroke-width="2"/>
+            <text x="134" y="320" text-anchor="middle" font-family="Times New Roman, Times, serif" font-size="22" fill="#0f172a">${p.b}&deg;</text>
+            <path d="M 213,120 A 42,42 0 0,1 220,185" fill="none" stroke="#0f172a" stroke-width="2"/>
+            <text x="242" y="156" text-anchor="middle" font-family="Times New Roman, Times, serif" font-style="italic" font-size="23" fill="#0f172a">q</text>
+            <text x="278" y="38" text-anchor="middle" font-family="Times New Roman, Times, serif" font-style="italic" font-size="24" fill="#0f172a">D</text>
+            <text x="170" y="152" text-anchor="middle" font-family="Times New Roman, Times, serif" font-style="italic" font-size="24" fill="#0f172a">A</text>
+            <text x="54" y="346" text-anchor="middle" font-family="Times New Roman, Times, serif" font-style="italic" font-size="24" fill="#0f172a">B</text>
+            <text x="380" y="346" text-anchor="middle" font-family="Times New Roman, Times, serif" font-style="italic" font-size="24" fill="#0f172a">C</text>
+          </svg>`
+        };
+      },
+
+      // Q6: Algebraic exterior angle: PQR straight line, PQ = QS, <QPS = (2k - d1), <SQR = (3k + d2) => k = 2*d1 + d2
+      (prevKey, useInitial) => {
+        const pool = [
+          { d1: 10, d2: 12, k: 32 },
+          { d1: 8,  d2: 10, k: 26 },
+          { d1: 12, d2: 6,  k: 30 },
+          { d1: 9,  d2: 16, k: 34 },
+          { d1: 11, d2: 6,  k: 28 },
+          { d1: 7,  d2: 22, k: 36 }
+        ];
+        const p = useInitial ? pool[0] : pickNewParam(pool, prevKey);
+        const { options, correct } = buildOptions(p.k, [p.k - 6, p.k - 4, p.k + 4, p.d1 + p.d2], false);
+        return {
+          key: JSON.stringify(p),
+          question: `<span style="font-weight: 800; margin-right: 6px;">6.</span>In the figure, ${mv('PQR')} is a straight line. If ${mv('PQ')} ${mt('=')} ${mv('QS')}, ${mt('&ang;')}${mv('QPS')} ${mt('= (2')}${mv('k')}${mt(` &minus; ${p.d1})&deg;`)}, and ${mt('&ang;')}${mv('SQR')} ${mt('= (3')}${mv('k')}${mt(` + ${p.d2})&deg;`)}, find ${mv('k')}.`,
+          options,
+          correct,
+          explanation: `Since ${mv('PQ')} = ${mv('QS')}, ${mt('&ang;')}${mv('QSP')} = ${mt('&ang;')}${mv('QPS')} = (2${mv('k')} &minus; ${p.d1})&deg;. By ext. ${mt('&ang;')} of ${mt('&Delta;')}${mv('PQS')}, (2${mv('k')} &minus; ${p.d1}) + (2${mv('k')} &minus; ${p.d1}) = 3${mv('k')} + ${p.d2} &rArr; 4${mv('k')} &minus; ${2 * p.d1} = 3${mv('k')} + ${p.d2} &rArr; ${mv('k')} = ${p.k}.`,
+          svg: `<svg width="100%" height="100%" viewBox="0 0 420 400">
+            <polygon points="45,295 255,295 160,115" fill="none" stroke="#0f172a" stroke-width="2.5" stroke-linejoin="round"/>
+            <line x1="255" y1="295" x2="385" y2="295" stroke="#0f172a" stroke-width="2.5" stroke-linecap="round"/>
+            <line x1="150" y1="284" x2="150" y2="306" stroke="#0f172a" stroke-width="2.5"/>
+            <line x1="197" y1="210" x2="218" y2="199" stroke="#0f172a" stroke-width="2.5"/>
+            <path d="M 90,295 A 45,45 0 0,0 74,259" fill="none" stroke="#0f172a" stroke-width="2"/>
+            <text x="142" y="275" text-anchor="middle" font-family="Times New Roman, Times, serif" font-size="19" fill="#0f172a">
+              (2<tspan font-style="italic">k</tspan> &minus; ${p.d1})&deg;
+            </text>
+            <path d="M 237,261 A 38,38 0 0,1 293,295" fill="none" stroke="#0f172a" stroke-width="2"/>
+            <text x="315" y="254" text-anchor="middle" font-family="Times New Roman, Times, serif" font-size="19" fill="#0f172a">
+              (3<tspan font-style="italic">k</tspan> + ${p.d2})&deg;
+            </text>
+            <text x="160" y="98" text-anchor="middle" font-family="Times New Roman, Times, serif" font-style="italic" font-size="24" fill="#0f172a">S</text>
+            <text x="34" y="314" text-anchor="middle" font-family="Times New Roman, Times, serif" font-style="italic" font-size="24" fill="#0f172a">P</text>
+            <text x="255" y="324" text-anchor="middle" font-family="Times New Roman, Times, serif" font-style="italic" font-size="24" fill="#0f172a">Q</text>
+            <text x="396" y="303" text-anchor="middle" font-family="Times New Roman, Times, serif" font-style="italic" font-size="24" fill="#0f172a">R</text>
+          </svg>`
+        };
+      },
+
+      // Q7: BCD straight line, AB = AC = CD, <ADC = d, find m = <BAC
+      (prevKey, useInitial) => {
+        const pool = [
+          { d: 34 }, { d: 28 }, { d: 32 }, { d: 36 }, { d: 38 }, { d: 40 }, { d: 30 }, { d: 26 }
+        ];
+        const p = useInitial ? pool[0] : pickNewParam(pool, prevKey);
+        const ext = 2 * p.d;
+        const m = 180 - 2 * ext;
+        const { options, correct } = buildOptions(m, [p.d, ext, 180 - ext, m + 12], true);
+        return {
+          key: JSON.stringify(p),
+          question: `<span style="font-weight: 800; margin-right: 6px;">7.</span>In the figure, ${mv('BCD')} is a straight line. If ${mv('AB')} ${mt('=')} ${mv('AC')}, ${mv('AC')} ${mt('=')} ${mv('CD')}, and ${mt('&ang;')}${mv('ADC')} ${mt(`= ${p.d}&deg;`)}, find ${mv('m')}.`,
+          options,
+          correct,
+          explanation: `Since ${mv('AC')} = ${mv('CD')}, ${mt('&ang;')}${mv('CAD')} = ${mt('&ang;')}${mv('ADC')} = ${p.d}&deg;. By ext. ${mt('&ang;')} of ${mt('&Delta;')}${mv('ACD')}, ${mt('&ang;')}${mv('ACB')} = ${p.d}&deg; + ${p.d}&deg; = ${ext}&deg;. Since ${mv('AB')} = ${mv('AC')}, ${mt('&ang;')}${mv('ABC')} = ${ext}&deg;, so ${mv('m')} = 180&deg; &minus; ${ext}&deg; &minus; ${ext}&deg; = ${m}&deg;.`,
+          svg: `<svg width="100%" height="100%" viewBox="0 0 420 400">
+            <polygon points="120,145 35,315 395,315" fill="none" stroke="#0f172a" stroke-width="2.5" stroke-linejoin="round"/>
+            <line x1="120" y1="145" x2="205" y2="315" stroke="#0f172a" stroke-width="2.5"/>
+            <line x1="68" y1="225" x2="88" y2="235" stroke="#0f172a" stroke-width="2.5"/>
+            <line x1="172" y1="225" x2="152" y2="235" stroke="#0f172a" stroke-width="2.5"/>
+            <line x1="300" y1="304" x2="300" y2="326" stroke="#0f172a" stroke-width="2.5"/>
+            <path d="M 102,181 A 40,40 0 0,0 138,181" fill="none" stroke="#0f172a" stroke-width="2"/>
+            <text x="120" y="210" text-anchor="middle" font-family="Times New Roman, Times, serif" font-style="italic" font-size="22" fill="#0f172a">m</text>
+            <path d="M 332,315 A 63,63 0 0,1 343,283" fill="none" stroke="#0f172a" stroke-width="2"/>
+            <text x="310" y="302" text-anchor="middle" font-family="Times New Roman, Times, serif" font-size="21" fill="#0f172a">${p.d}&deg;</text>
+            <text x="120" y="130" text-anchor="middle" font-family="Times New Roman, Times, serif" font-style="italic" font-size="24" fill="#0f172a">A</text>
+            <text x="24" y="330" text-anchor="middle" font-family="Times New Roman, Times, serif" font-style="italic" font-size="24" fill="#0f172a">B</text>
+            <text x="205" y="342" text-anchor="middle" font-family="Times New Roman, Times, serif" font-style="italic" font-size="24" fill="#0f172a">C</text>
+            <text x="406" y="330" text-anchor="middle" font-family="Times New Roman, Times, serif" font-style="italic" font-size="24" fill="#0f172a">D</text>
+          </svg>`
+        };
+      },
+
+      // Q8: AB = AC and DB = DC, <BAC = a, <BDC = d, find <ABD
+      (prevKey, useInitial) => {
+        const pool = [
+          { a: 50, d: 84 }, { a: 44, d: 88 }, { a: 56, d: 92 }, { a: 40, d: 76 }, { a: 52, d: 96 }, { a: 48, d: 80 }, { a: 60, d: 100 }
+        ];
+        const p = useInitial ? pool[0] : pickNewParam(pool, prevKey);
+        const b1 = (180 - p.a) / 2;
+        const b2 = (180 - p.d) / 2;
+        const ans = b1 - b2;
+        const { options, correct } = buildOptions(ans, [ans * 2, b2, b1, ans + 7], true);
+        return {
+          key: JSON.stringify(p),
+          question: `<span style="font-weight: 800; margin-right: 6px;">8.</span>In the figure, ${mv('AB')} ${mt('=')} ${mv('AC')} and ${mv('DB')} ${mt('=')} ${mv('DC')}. If ${mt('&ang;')}${mv('BAC')} ${mt(`= ${p.a}&deg;`)} and ${mt('&ang;')}${mv('BDC')} ${mt(`= ${p.d}&deg;`)}, find ${mt('&ang;')}${mv('ABD')}.`,
+          options,
+          correct,
+          explanation: `In ${mt('&Delta;')}${mv('ABC')}, ${mt('&ang;')}${mv('ABC')} = (180&deg; &minus; ${p.a}&deg;) &divide; 2 = ${b1}&deg;. In ${mt('&Delta;')}${mv('DBC')}, ${mt('&ang;')}${mv('DBC')} = (180&deg; &minus; ${p.d}&deg;) &divide; 2 = ${b2}&deg;. Thus, ${mt('&ang;')}${mv('ABD')} = ${b1}&deg; &minus; ${b2}&deg; = ${ans}&deg;.`,
+          svg: `<svg width="100%" height="100%" viewBox="0 0 400 400">
+            <polygon points="200,50 65,335 335,335" fill="none" stroke="#0f172a" stroke-width="2.5" stroke-linejoin="round"/>
+            <polyline points="65,335 200,205 335,335" fill="none" stroke="#0f172a" stroke-width="2.5" stroke-linejoin="round"/>
+            <line x1="122" y1="188" x2="143" y2="197" stroke="#0f172a" stroke-width="2.5"/>
+            <line x1="278" y1="188" x2="257" y2="197" stroke="#0f172a" stroke-width="2.5"/>
+            <line x1="122" y1="265" x2="137" y2="280" stroke="#0f172a" stroke-width="2.2"/>
+            <line x1="128" y1="259" x2="143" y2="274" stroke="#0f172a" stroke-width="2.2"/>
+            <line x1="278" y1="265" x2="263" y2="280" stroke="#0f172a" stroke-width="2.2"/>
+            <line x1="272" y1="259" x2="257" y2="274" stroke="#0f172a" stroke-width="2.2"/>
+            <path d="M 182,88 A 42,42 0 0,0 218,88" fill="none" stroke="#0f172a" stroke-width="2"/>
+            <text x="200" y="116" text-anchor="middle" font-family="Times New Roman, Times, serif" font-size="21" fill="#0f172a">${p.a}&deg;</text>
+            <path d="M 174,230 A 36,36 0 0,0 226,230" fill="none" stroke="#0f172a" stroke-width="2"/>
+            <text x="200" y="258" text-anchor="middle" font-family="Times New Roman, Times, serif" font-size="21" fill="#0f172a">${p.d}&deg;</text>
+            <text x="200" y="37" text-anchor="middle" font-family="Times New Roman, Times, serif" font-style="italic" font-size="24" fill="#0f172a">A</text>
+            <text x="200" y="191" text-anchor="middle" font-family="Times New Roman, Times, serif" font-style="italic" font-size="24" fill="#0f172a">D</text>
+            <text x="48" y="346" text-anchor="middle" font-family="Times New Roman, Times, serif" font-style="italic" font-size="24" fill="#0f172a">B</text>
+            <text x="352" y="346" text-anchor="middle" font-family="Times New Roman, Times, serif" font-style="italic" font-size="24" fill="#0f172a">C</text>
+          </svg>`
+        };
+      },
+
+      // Q9: PQ = PR = PS, <QPR = a, <RPS = b, find <QRS
+      (prevKey, useInitial) => {
+        const pool = [
+          { a: 42, b: 68 }, { a: 36, b: 64 }, { a: 48, b: 72 }, { a: 40, b: 58 }, { a: 52, b: 62 }, { a: 46, b: 74 }
+        ];
+        const p = useInitial ? pool[0] : pickNewParam(pool, prevKey);
+        const r1 = (180 - p.a) / 2;
+        const r2 = (180 - p.b) / 2;
+        const ans = r1 + r2;
+        const { options, correct } = buildOptions(ans, [p.a + p.b, 180 - ans, ans + 10, r1], true);
+        return {
+          key: JSON.stringify(p),
+          question: `<span style="font-weight: 800; margin-right: 6px;">9.</span>In the figure, ${mv('PQ')} ${mt('=')} ${mv('PR')} ${mt('=')} ${mv('PS')}. If ${mt('&ang;')}${mv('QPR')} ${mt(`= ${p.a}&deg;`)} and ${mt('&ang;')}${mv('RPS')} ${mt(`= ${p.b}&deg;`)}, find ${mt('&ang;')}${mv('QRS')}.`,
+          options,
+          correct,
+          explanation: `In ${mt('&Delta;')}${mv('PQR')} (${mv('PQ')} = ${mv('PR')}), ${mt('&ang;')}${mv('PRQ')} = (180&deg; &minus; ${p.a}&deg;) &divide; 2 = ${r1}&deg;. In ${mt('&Delta;')}${mv('PRS')} (${mv('PR')} = ${mv('PS')}), ${mt('&ang;')}${mv('PRS')} = (180&deg; &minus; ${p.b}&deg;) &divide; 2 = ${r2}&deg;. Therefore, ${mt('&ang;')}${mv('QRS')} = ${r1}&deg; + ${r2}&deg; = ${ans}&deg;.`,
+          svg: `<svg width="100%" height="100%" viewBox="0 0 420 400">
+            <polygon points="85,205 199,59 267,173 183,362" fill="none" stroke="#0f172a" stroke-width="2.5" stroke-linejoin="round"/>
+            <line x1="85" y1="205" x2="267" y2="173" stroke="#0f172a" stroke-width="2.5"/>
+            <line x1="133" y1="125" x2="151" y2="139" stroke="#0f172a" stroke-width="2.5"/>
+            <line x1="174" y1="178" x2="178" y2="200" stroke="#0f172a" stroke-width="2.5"/>
+            <line x1="125" y1="289" x2="143" y2="278" stroke="#0f172a" stroke-width="2.5"/>
+            <path d="M 116,166 A 50,50 0 0,1 134,196" fill="none" stroke="#0f172a" stroke-width="2"/>
+            <text x="163" y="166" text-anchor="middle" font-family="Times New Roman, Times, serif" font-size="20" fill="#0f172a">${p.a}&deg;</text>
+            <path d="M 134,196 A 50,50 0 0,1 112,247" fill="none" stroke="#0f172a" stroke-width="2"/>
+            <text x="158" y="232" text-anchor="middle" font-family="Times New Roman, Times, serif" font-size="20" fill="#0f172a">${p.b}&deg;</text>
+            <text x="68" y="212" text-anchor="middle" font-family="Times New Roman, Times, serif" font-style="italic" font-size="24" fill="#0f172a">P</text>
+            <text x="206" y="45" text-anchor="middle" font-family="Times New Roman, Times, serif" font-style="italic" font-size="24" fill="#0f172a">Q</text>
+            <text x="285" y="177" text-anchor="middle" font-family="Times New Roman, Times, serif" font-style="italic" font-size="24" fill="#0f172a">R</text>
+            <text x="186" y="385" text-anchor="middle" font-family="Times New Roman, Times, serif" font-style="italic" font-size="24" fill="#0f172a">S</text>
+          </svg>`
+        };
+      },
+
+      // Q10: Equilateral BCD + isosceles ABC (AB = AC), <ABD = abd, find <BAC
+      (prevKey, useInitial) => {
+        const pool = [
+          { abd: 108 }, { abd: 102 }, { abd: 112 }, { abd: 116 }, { abd: 98 }, { abd: 124 }, { abd: 105 }
+        ];
+        const p = useInitial ? pool[0] : pickNewParam(pool, prevKey);
+        const abc = p.abd - 60;
+        const bac = 180 - 2 * abc;
+        const { options, correct } = buildOptions(bac, [abc, 60, 180 - p.abd, bac + 12], true);
+        return {
+          key: JSON.stringify(p),
+          question: `<span style="font-weight: 800; margin-right: 6px;">10.</span>In the figure, ${mt('&Delta;')}${mv('BCD')} is an equilateral triangle and ${mv('AB')} ${mt('=')} ${mv('AC')}. If ${mt('&ang;')}${mv('ABD')} ${mt(`= ${p.abd}&deg;`)}, find ${mt('&ang;')}${mv('BAC')}.`,
+          options,
+          correct,
+          explanation: `Since ${mt('&Delta;')}${mv('BCD')} is equilateral, ${mt('&ang;')}${mv('CBD')} = 60&deg;. Thus, ${mt('&ang;')}${mv('ABC')} = ${p.abd}&deg; &minus; 60&deg; = ${abc}&deg;. Since ${mv('AB')} = ${mv('AC')}, ${mt('&ang;')}${mv('ACB')} = ${abc}&deg;, so ${mt('&ang;')}${mv('BAC')} = 180&deg; &minus; ${abc}&deg; &minus; ${abc}&deg; = ${bac}&deg;.`,
+          svg: `<svg width="100%" height="100%" viewBox="0 0 400 400">
+            <polygon points="200,55 80,210 200,365 320,210" fill="none" stroke="#0f172a" stroke-width="2.5" stroke-linejoin="round"/>
+            <line x1="80" y1="210" x2="320" y2="210" stroke="#0f172a" stroke-width="2.5"/>
+            <line x1="131" y1="126" x2="149" y2="140" stroke="#0f172a" stroke-width="2.5"/>
+            <line x1="269" y1="126" x2="251" y2="140" stroke="#0f172a" stroke-width="2.5"/>
+            <line x1="196" y1="201" x2="196" y2="219" stroke="#0f172a" stroke-width="2.2"/>
+            <line x1="204" y1="201" x2="204" y2="219" stroke="#0f172a" stroke-width="2.2"/>
+            <line x1="130" y1="291" x2="146" y2="278" stroke="#0f172a" stroke-width="2.2"/>
+            <line x1="136" y1="298" x2="152" y2="285" stroke="#0f172a" stroke-width="2.2"/>
+            <line x1="270" y1="291" x2="254" y2="278" stroke="#0f172a" stroke-width="2.2"/>
+            <line x1="264" y1="298" x2="248" y2="285" stroke="#0f172a" stroke-width="2.2"/>
+            <path d="M 103.3,180.0 A 38,38 0 0,1 103.3,240.0" fill="none" stroke="#0f172a" stroke-width="2"/>
+            <text x="140" y="201" text-anchor="middle" font-family="Times New Roman, Times, serif" font-size="19" fill="#0f172a">${p.abd}&deg;</text>
+            <text x="200" y="42" text-anchor="middle" font-family="Times New Roman, Times, serif" font-style="italic" font-size="24" fill="#0f172a">A</text>
+            <text x="62" y="216" text-anchor="middle" font-family="Times New Roman, Times, serif" font-style="italic" font-size="24" fill="#0f172a">B</text>
+            <text x="338" y="216" text-anchor="middle" font-family="Times New Roman, Times, serif" font-style="italic" font-size="24" fill="#0f172a">C</text>
+            <text x="200" y="388" text-anchor="middle" font-family="Times New Roman, Times, serif" font-style="italic" font-size="24" fill="#0f172a">D</text>
+          </svg>`
+        };
+      },
+
+      // Q11: Right triangle <ABC = 90, AD = DC, <BAD = bad (even), find <ACB = (90 - bad)/2
+      (prevKey, useInitial) => {
+        const pool = [
+          { bad: 26 }, { bad: 22 }, { bad: 30 }, { bad: 34 }, { bad: 18 }, { bad: 28 }, { bad: 38 }
+        ];
+        const p = useInitial ? pool[0] : pickNewParam(pool, prevKey);
+        const adb = 90 - p.bad;
+        const acb = adb / 2;
+        const { options, correct } = buildOptions(acb, [p.bad, adb, 90 - acb, acb + 10], true);
+        return {
+          key: JSON.stringify(p),
+          question: `<span style="font-weight: 800; margin-right: 6px;">11.</span>In the figure, ${mt('&ang;')}${mv('ABC')} ${mt('= 90&deg;')}, ${mv('D')} is a point on ${mv('BC')} such that ${mv('AD')} ${mt('=')} ${mv('DC')}, and ${mt('&ang;')}${mv('BAD')} ${mt(`= ${p.bad}&deg;`)}. Find ${mt('&ang;')}${mv('ACB')}.`,
+          options,
+          correct,
+          explanation: `In right ${mt('&Delta;')}${mv('ABD')}, ${mt('&ang;')}${mv('ADB')} = 90&deg; &minus; ${p.bad}&deg; = ${adb}&deg;. Since ${mv('AD')} = ${mv('DC')}, ${mt('&ang;')}${mv('DAC')} = ${mt('&ang;')}${mv('ACB')}. By ext. ${mt('&ang;')} of ${mt('&Delta;')}${mv('ADC')}, 2${mt('&ang;')}${mv('ACB')} = ${adb}&deg; &rArr; ${mt('&ang;')}${mv('ACB')} = ${acb}&deg;.`,
+          svg: `<svg width="100%" height="100%" viewBox="0 0 420 400">
+            <polygon points="65,85 65,330 375,330" fill="none" stroke="#0f172a" stroke-width="2.5" stroke-linejoin="round"/>
+            <line x1="65" y1="85" x2="180" y2="330" stroke="#0f172a" stroke-width="2.5"/>
+            <polyline points="65,308 87,308 87,330" fill="none" stroke="#0f172a" stroke-width="2"/>
+            <line x1="113" y1="212" x2="132" y2="203" stroke="#0f172a" stroke-width="2.5"/>
+            <line x1="278" y1="319" x2="278" y2="341" stroke="#0f172a" stroke-width="2.5"/>
+            <path d="M 65,148 A 63,63 0 0,0 92,142" fill="none" stroke="#0f172a" stroke-width="2"/>
+            <text x="95" y="176" text-anchor="middle" font-family="Times New Roman, Times, serif" font-size="20" fill="#0f172a">${p.bad}&deg;</text>
+            <text x="65" y="70" text-anchor="middle" font-family="Times New Roman, Times, serif" font-style="italic" font-size="24" fill="#0f172a">A</text>
+            <text x="48" y="344" text-anchor="middle" font-family="Times New Roman, Times, serif" font-style="italic" font-size="24" fill="#0f172a">B</text>
+            <text x="180" y="355" text-anchor="middle" font-family="Times New Roman, Times, serif" font-style="italic" font-size="24" fill="#0f172a">D</text>
+            <text x="392" y="338" text-anchor="middle" font-family="Times New Roman, Times, serif" font-style="italic" font-size="24" fill="#0f172a">C</text>
+          </svg>`
+        };
+      },
+
+      // Q12: PQS straight line, PQ = QR = RS, <QRS = qrs (divisible by 4), find <QPR = (180 - qrs)/4
+      (prevKey, useInitial) => {
+        const pool = [
+          { qrs: 84 }, { qrs: 76 }, { qrs: 92 }, { qrs: 68 }, { qrs: 100 }, { qrs: 80 }, { qrs: 72 }
+        ];
+        const p = useInitial ? pool[0] : pickNewParam(pool, prevKey);
+        const rqs = (180 - p.qrs) / 2;
+        const qpr = rqs / 2;
+        const { options, correct } = buildOptions(qpr, [rqs, p.qrs / 2, 90 - qpr, qpr + 12], true);
+        return {
+          key: JSON.stringify(p),
+          question: `<span style="font-weight: 800; margin-right: 6px;">12.</span>In the figure, ${mv('PQS')} is a straight line. If ${mv('PQ')} ${mt('=')} ${mv('QR')}, ${mv('QR')} ${mt('=')} ${mv('RS')}, and ${mt('&ang;')}${mv('QRS')} ${mt(`= ${p.qrs}&deg;`)}, find ${mt('&ang;')}${mv('QPR')}.`,
+          options,
+          correct,
+          explanation: `In ${mt('&Delta;')}${mv('QRS')} (${mv('QR')} = ${mv('RS')}), ${mt('&ang;')}${mv('RQS')} = (180&deg; &minus; ${p.qrs}&deg;) &divide; 2 = ${rqs}&deg;. Since ${mv('PQ')} = ${mv('QR')}, ${mt('&ang;')}${mv('QPR')} = ${mt('&ang;')}${mv('QRP')}. By ext. ${mt('&ang;')} of ${mt('&Delta;')}${mv('PQR')}, 2${mt('&ang;')}${mv('QPR')} = ${rqs}&deg; &rArr; ${mt('&ang;')}${mv('QPR')} = ${qpr}&deg;.`,
+          svg: `<svg width="100%" height="100%" viewBox="0 0 420 400">
+            <polygon points="35,315 395,315 305,155" fill="none" stroke="#0f172a" stroke-width="2.5" stroke-linejoin="round"/>
+            <line x1="215" y1="315" x2="305" y2="155" stroke="#0f172a" stroke-width="2.5"/>
+            <line x1="125" y1="304" x2="125" y2="326" stroke="#0f172a" stroke-width="2.5"/>
+            <line x1="250" y1="229" x2="270" y2="241" stroke="#0f172a" stroke-width="2.5"/>
+            <line x1="360" y1="229" x2="340" y2="241" stroke="#0f172a" stroke-width="2.5"/>
+            <path d="M 286,189 A 39,39 0 0,0 324,189" fill="none" stroke="#0f172a" stroke-width="2"/>
+            <text x="305" y="218" text-anchor="middle" font-family="Times New Roman, Times, serif" font-size="20" fill="#0f172a">${p.qrs}&deg;</text>
+            <text x="305" y="138" text-anchor="middle" font-family="Times New Roman, Times, serif" font-style="italic" font-size="24" fill="#0f172a">R</text>
+            <text x="24" y="330" text-anchor="middle" font-family="Times New Roman, Times, serif" font-style="italic" font-size="24" fill="#0f172a">P</text>
+            <text x="215" y="342" text-anchor="middle" font-family="Times New Roman, Times, serif" font-style="italic" font-size="24" fill="#0f172a">Q</text>
+            <text x="406" y="330" text-anchor="middle" font-family="Times New Roman, Times, serif" font-style="italic" font-size="24" fill="#0f172a">S</text>
+          </svg>`
+        };
+      },
+
+      // Q13: AB = AC, <BAC = a (default 128° -> base = 26°, ext angle theta = 154°), continuous lines ACD & BCE
+      (prevKey, useInitial) => {
+        const pool = [
+          { a: 128 },
+          { a: 124 },
+          { a: 132 },
+          { a: 120 },
+          { a: 136 },
+          { a: 116 },
+          { a: 140 }
+        ];
+        const p = useInitial ? pool[0] : pickNewParam(pool, prevKey);
+        const base = (180 - p.a) / 2;
+        const theta = 180 - base;
+        const { options, correct } = buildOptions(theta, [base, p.a, 180 - p.a, theta - 12], true);
+
+        // True-to-scale coordinates with exact shared vertex endpoints (zero broken segments)
+        // Base BC is horizontal at y = yC; vertex A is centered above BC at x = Ax
+        const rad = Math.PI / 180;
+        const Ax = 230.0;
+        const yC = 235.0;
+        const halfBC = 148.0;
+        const Bx = Ax - halfBC;
+        const Cx = Ax + halfBC;
+        const h = halfBC * Math.tan(base * rad);
+        const yA = yC - h;
+
+        // Extend AC past C to D (single continuous line segment from A through C to D)
+        const lenAC = Math.hypot(Cx - Ax, yC - yA);
+        const uxAC = (Cx - Ax) / lenAC;
+        const uyAC = (yC - yA) / lenAC;
+        const extCD = 88.0;
+        const Dx = Cx + extCD * uxAC;
+        const Dy = yC + extCD * uyAC;
+
+        // Extend BC past C to E (single continuous horizontal line segment from B through C to E)
+        const extCE = 105.0;
+        const Ex = Cx + extCE;
+
+        // Midpoint tick marks on AB and AC (AB = AC)
+        const midAB_x = (Ax + Bx) / 2;
+        const midAB_y = (yA + yC) / 2;
+        const lenAB = Math.hypot(Bx - Ax, yC - yA);
+        const nxAB = -(yC - yA) / lenAB;
+        const nyAB = (Bx - Ax) / lenAB;
+
+        const midAC_x = (Ax + Cx) / 2;
+        const midAC_y = (yA + yC) / 2;
+        const nxAC = -(yC - yA) / lenAC;
+        const nyAC = (Cx - Ax) / lenAC;
+
+        // Arc for <BAC = a at vertex A
+        const rA = 42;
+        const angAB = Math.atan2(yC - yA, Bx - Ax); // ~ 180 - base
+        const angAC = Math.atan2(yC - yA, Cx - Ax); // ~ base
+        const arcA1_x = Ax + rA * Math.cos(angAC);
+        const arcA1_y = yA + rA * Math.sin(angAC);
+        const arcA2_x = Ax + rA * Math.cos(angAB);
+        const arcA2_y = yA + rA * Math.sin(angAB);
+        const lblA_x = Ax;
+        const lblA_y = yA + rA + 23;
+
+        // Arc for exterior angle theta = <ACE (between ray CA at (180 - base)° and ray CE at 0°)
+        // Also equals <BCD (between ray CB at 180° and ray CD at base°)
+        const rC = 44;
+        const angCA = Math.atan2(yA - yC, Ax - Cx); // -(180 - base) in SVG y-down
+        const arcC1_x = Cx + rC * Math.cos(angCA);
+        const arcC1_y = yC + rC * Math.sin(angCA);
+        const arcC2_x = Cx + rC;
+        const arcC2_y = yC;
+        const bisC = (angCA + 0) / 2;
+        const lblC_x = Cx + (rC + 24) * Math.cos(bisC);
+        const lblC_y = yC + (rC + 24) * Math.sin(bisC) + 6;
+
+        return {
+          key: JSON.stringify(p),
+          question: `<span style="font-weight: 800; margin-right: 6px;">13.</span>In the figure, ${mv('AB')} ${mt('=')} ${mv('AC')}, and ${mv('ACD')} and ${mv('BCE')} are straight lines. If ${mt('&ang;')}${mv('BAC')} ${mt(`= ${p.a}&deg;`)}, find ${mt('&theta;')}.`,
+          options,
+          correct,
+          explanation: `In ${mt('&Delta;')}${mv('ABC')}, since ${mv('AB')} = ${mv('AC')}, ${mt('&ang;')}${mv('ABC')} = ${mt('&ang;')}${mv('ACB')} = (180&deg; &minus; ${p.a}&deg;) &divide; 2 = ${base}&deg; (base ${mt('&ang;')}s, isos. ${mt('&Delta;')}). Since ${mv('BCE')} is a straight line, ${mt('&theta;')} = ${mt('&ang;')}${mv('ACE')} = 180&deg; &minus; ${base}&deg; = ${theta}&deg; (adj. ${mt('&ang;')}s on st. line).`,
+          svg: `<svg width="100%" height="100%" viewBox="0 0 530 365">
+            <!-- Continuous unbroken sides of triangle ABC and extensions ACD, BCE -->
+            <line x1="${Ax.toFixed(1)}" y1="${yA.toFixed(1)}" x2="${Bx.toFixed(1)}" y2="${yC.toFixed(1)}" stroke="#0f172a" stroke-width="2.6" stroke-linecap="round"/>
+            <line x1="${Ax.toFixed(1)}" y1="${yA.toFixed(1)}" x2="${Dx.toFixed(1)}" y2="${Dy.toFixed(1)}" stroke="#0f172a" stroke-width="2.6" stroke-linecap="round"/>
+            <line x1="${Bx.toFixed(1)}" y1="${yC.toFixed(1)}" x2="${Ex.toFixed(1)}" y2="${yC.toFixed(1)}" stroke="#0f172a" stroke-width="2.6" stroke-linecap="round"/>
+
+            <!-- Equal side single tick marks on AB and AC -->
+            <line x1="${(midAB_x - 10 * nxAB).toFixed(1)}" y1="${(midAB_y - 10 * nyAB).toFixed(1)}" x2="${(midAB_x + 10 * nxAB).toFixed(1)}" y2="${(midAB_y + 10 * nyAB).toFixed(1)}" stroke="#0f172a" stroke-width="2.6" stroke-linecap="round"/>
+            <line x1="${(midAC_x - 10 * nxAC).toFixed(1)}" y1="${(midAC_y - 10 * nyAC).toFixed(1)}" x2="${(midAC_x + 10 * nxAC).toFixed(1)}" y2="${(midAC_y + 10 * nyAC).toFixed(1)}" stroke="#0f172a" stroke-width="2.6" stroke-linecap="round"/>
+
+            <!-- Vertex angle <BAC = a -->
+            <path d="M ${arcA1_x.toFixed(1)},${arcA1_y.toFixed(1)} A ${rA},${rA} 0 0,1 ${arcA2_x.toFixed(1)},${arcA2_y.toFixed(1)}" fill="none" stroke="#0f172a" stroke-width="2"/>
+            <text x="${lblA_x.toFixed(1)}" y="${lblA_y.toFixed(1)}" text-anchor="middle" font-family="Times New Roman, Times, serif" font-size="21" fill="#0f172a">${p.a}&deg;</text>
+
+            <!-- Exterior angle theta = <ACE -->
+            <path d="M ${arcC1_x.toFixed(1)},${arcC1_y.toFixed(1)} A ${rC},${rC} 0 0,1 ${arcC2_x.toFixed(1)},${arcC2_y.toFixed(1)}" fill="none" stroke="#0f172a" stroke-width="2"/>
+            <text x="${lblC_x.toFixed(1)}" y="${lblC_y.toFixed(1)}" text-anchor="middle" font-family="Times New Roman, Times, serif" font-style="italic" font-size="22" fill="#0f172a">&theta;</text>
+
+            <!-- Vertex & Ray Labels -->
+            <text x="${Ax.toFixed(1)}" y="${(yA - 14).toFixed(1)}" text-anchor="middle" font-family="Times New Roman, Times, serif" font-style="italic" font-size="25" fill="#0f172a">A</text>
+            <text x="${(Bx - 16).toFixed(1)}" y="${(yC + 8).toFixed(1)}" text-anchor="middle" font-family="Times New Roman, Times, serif" font-style="italic" font-size="25" fill="#0f172a">B</text>
+            <text x="${(Cx - 6).toFixed(1)}" y="${(yC + 28).toFixed(1)}" text-anchor="middle" font-family="Times New Roman, Times, serif" font-style="italic" font-size="25" fill="#0f172a">C</text>
+            <text x="${(Dx + 15 * uxAC).toFixed(1)}" y="${(Dy + 15 * uyAC + 7).toFixed(1)}" text-anchor="middle" font-family="Times New Roman, Times, serif" font-style="italic" font-size="25" fill="#0f172a">D</text>
+            <text x="${(Ex + 16).toFixed(1)}" y="${(yC + 8).toFixed(1)}" text-anchor="middle" font-family="Times New Roman, Times, serif" font-style="italic" font-size="25" fill="#0f172a">E</text>
+          </svg>`
+        };
+      },
+
+      // Q14: PQ // RU, QTS straight line, QR = QT, <PQR = pqr, find ext <RTS = 180 - pqr
+      (prevKey, useInitial) => {
+        const pool = [
+          { pqr: 55 },
+          { pqr: 50 },
+          { pqr: 58 },
+          { pqr: 62 },
+          { pqr: 48 },
+          { pqr: 52 }
+        ];
+        const p = useInitial ? pool[0] : pickNewParam(pool, prevKey);
+        const qtr = p.pqr;
+        const rts = 180 - p.pqr;
+        const { options, correct } = buildOptions(rts, [p.pqr, 2 * p.pqr, 90 + p.pqr / 2, rts + 10], true);
+        return {
+          key: JSON.stringify(p),
+          question: `<span style="font-weight: 800; margin-right: 6px;">14.</span>In the figure, ${mv('PQ')} ${mt('//')} ${mv('RU')}, ${mv('QTS')} is a straight line, and ${mv('QR')} ${mt('=')} ${mv('QT')}. If ${mt('&ang;')}${mv('PQR')} ${mt(`= ${p.pqr}&deg;`)}, find ${mv('x')}.`,
+          options,
+          correct,
+          explanation: `Since ${mv('PQ')} // ${mv('RU')}, ${mt('&ang;')}${mv('QRT')} = ${mt('&ang;')}${mv('PQR')} = ${p.pqr}&deg; (alt. ${mt('&ang;')}s, ${mv('PQ')} // ${mv('RU')}). Since ${mv('QR')} = ${mv('QT')}, ${mt('&ang;')}${mv('QTR')} = ${mt('&ang;')}${mv('QRT')} = ${qtr}&deg; (base ${mt('&ang;')}s, isos. ${mt('&Delta;')}). Since ${mv('QTS')} is a straight line, ${mv('x')} = 180&deg; &minus; ${qtr}&deg; = ${rts}&deg; (adj. ${mt('&ang;')}s on st. line).`,
+          svg: `<svg width="100%" height="100%" viewBox="0 0 450 375">
+            <line x1="150" y1="90" x2="385" y2="90" stroke="#0f172a" stroke-width="2.5" stroke-linecap="round"/>
+            <line x1="55" y1="265" x2="415" y2="265" stroke="#0f172a" stroke-width="2.5" stroke-linecap="round"/>
+            <line x1="205.0" y1="90.0" x2="33.7" y2="334.6" stroke="#0f172a" stroke-width="2.5" stroke-linecap="round"/>
+            <line x1="205.0" y1="90.0" x2="327.5" y2="265.0" stroke="#0f172a" stroke-width="2.5"/>
+            <polyline points="295,83 306,90 295,97" fill="none" stroke="#0f172a" stroke-width="2.2"/>
+            <polyline points="365,258 376,265 365,272" fill="none" stroke="#0f172a" stroke-width="2.2"/>
+            <line x1="274.5" y1="171.8" x2="258.1" y2="183.2" stroke="#0f172a" stroke-width="2.5"/>
+            <line x1="135.5" y1="171.8" x2="151.9" y2="183.2" stroke="#0f172a" stroke-width="2.5"/>
+            <path d="M 251.0,90.0 A 46,46 0 0,1 231.4,127.7" fill="none" stroke="#0f172a" stroke-width="2"/>
+            <text x="265.3" y="127.4" text-anchor="middle" font-family="Times New Roman, Times, serif" font-size="19" fill="#0f172a">${p.pqr}&deg;</text>
+            <path d="M 116.5,265.0 A 34,34 0 0,1 63.0,292.9" fill="none" stroke="#0f172a" stroke-width="2"/>
+            <text x="106.5" y="317.1" text-anchor="middle" font-family="Times New Roman, Times, serif" font-style="italic" font-size="21" fill="#0f172a">x</text>
+            <text x="400" y="97" text-anchor="middle" font-family="Times New Roman, Times, serif" font-style="italic" font-size="24" fill="#0f172a">P</text>
+            <text x="205.0" y="74" text-anchor="middle" font-family="Times New Roman, Times, serif" font-style="italic" font-size="24" fill="#0f172a">Q</text>
+            <text x="64.5" y="256" text-anchor="middle" font-family="Times New Roman, Times, serif" font-style="italic" font-size="24" fill="#0f172a">T</text>
+            <text x="341.5" y="256" text-anchor="middle" font-family="Times New Roman, Times, serif" font-style="italic" font-size="24" fill="#0f172a">R</text>
+            <text x="428" y="272" text-anchor="middle" font-family="Times New Roman, Times, serif" font-style="italic" font-size="24" fill="#0f172a">U</text>
+            <text x="23.7" y="354.6" text-anchor="middle" font-family="Times New Roman, Times, serif" font-style="italic" font-size="24" fill="#0f172a">S</text>
+          </svg>`
+        };
+      },
+
+      // Q15: AB // DE, BCD straight line, AC = CE, <BAC = a, <CED = e (a + e even), find <AED = e + (180 - (a + e))/2
+      (prevKey, useInitial) => {
+        const pool = [
+          { a: 38, e: 46 },
+          { a: 34, e: 42 },
+          { a: 40, e: 52 },
+          { a: 36, e: 48 },
+          { a: 42, e: 44 },
+          { a: 32, e: 40 }
+        ];
+        const p = useInitial ? pool[0] : pickNewParam(pool, prevKey);
+        const ace = p.a + p.e;
+        const cea = (180 - ace) / 2;
+        const aed = p.e + cea;
+        const { options, correct } = buildOptions(aed, [cea, 180 - ace, 180 - p.a, aed + 8], true);
+        return {
+          key: JSON.stringify(p),
+          question: `<span style="font-weight: 800; margin-right: 6px;">15.</span>In the figure, ${mv('AB')} ${mt('//')} ${mv('DE')}, ${mv('BCD')} is a straight line, and ${mv('AC')} ${mt('=')} ${mv('CE')}. If ${mt('&ang;')}${mv('BAC')} ${mt(`= ${p.a}&deg;`)} and ${mt('&ang;')}${mv('CED')} ${mt(`= ${p.e}&deg;`)}, find ${mt('&ang;')}${mv('AED')}.`,
+          options,
+          correct,
+          explanation: `Since ${mv('AB')} // ${mv('DE')}, ${mt('&ang;')}${mv('ACE')} = ${mt('&ang;')}${mv('BAC')} + ${mt('&ang;')}${mv('CED')} = ${p.a}&deg; + ${p.e}&deg; = ${ace}&deg;. Since ${mv('AC')} = ${mv('CE')}, ${mt('&ang;')}${mv('CAE')} = ${mt('&ang;')}${mv('CEA')} = (180&deg; &minus; ${ace}&deg;) &divide; 2 = ${cea}&deg; (base ${mt('&ang;')}s, isos. ${mt('&Delta;')}). Therefore, ${mt('&ang;')}${mv('AED')} = ${mt('&ang;')}${mv('CED')} + ${mt('&ang;')}${mv('CEA')} = ${p.e}&deg; + ${cea}&deg; = ${aed}&deg;.`,
+          svg: `<svg width="100%" height="100%" viewBox="0 0 420 400">
+            <line x1="85" y1="65" x2="85" y2="315" stroke="#0f172a" stroke-width="2.5" stroke-linecap="round"/>
+            <line x1="335" y1="65" x2="335" y2="315" stroke="#0f172a" stroke-width="2.5" stroke-linecap="round"/>
+            <line x1="85" y1="295" x2="335" y2="295" stroke="#0f172a" stroke-width="2.5"/>
+            <line x1="85" y1="115" x2="210" y2="295" stroke="#0f172a" stroke-width="2.5"/>
+            <line x1="335" y1="115" x2="210" y2="295" stroke="#0f172a" stroke-width="2.5"/>
+            <line x1="85" y1="115" x2="335" y2="115" stroke="#0f172a" stroke-width="2.2" stroke-dasharray="5,4"/>
+            <polyline points="78,195 85,184 92,195" fill="none" stroke="#0f172a" stroke-width="2.2"/>
+            <polyline points="328,195 335,184 342,195" fill="none" stroke="#0f172a" stroke-width="2.2"/>
+            <line x1="138" y1="211" x2="156" y2="199" stroke="#0f172a" stroke-width="2.5"/>
+            <line x1="282" y1="211" x2="264" y2="199" stroke="#0f172a" stroke-width="2.5"/>
+            <path d="M 85,168 A 53,53 0 0,0 115,159" fill="none" stroke="#0f172a" stroke-width="2"/>
+            <text x="112" y="192" text-anchor="middle" font-family="Times New Roman, Times, serif" font-size="19" fill="#0f172a">${p.a}&deg;</text>
+            <path d="M 335,168 A 53,53 0 0,1 305,159" fill="none" stroke="#0f172a" stroke-width="2"/>
+            <text x="308" y="192" text-anchor="middle" font-family="Times New Roman, Times, serif" font-size="19" fill="#0f172a">${p.e}&deg;</text>
+            <text x="66" y="122" text-anchor="middle" font-family="Times New Roman, Times, serif" font-style="italic" font-size="24" fill="#0f172a">A</text>
+            <text x="66" y="302" text-anchor="middle" font-family="Times New Roman, Times, serif" font-style="italic" font-size="24" fill="#0f172a">B</text>
+            <text x="210" y="324" text-anchor="middle" font-family="Times New Roman, Times, serif" font-style="italic" font-size="24" fill="#0f172a">C</text>
+            <text x="354" y="302" text-anchor="middle" font-family="Times New Roman, Times, serif" font-style="italic" font-size="24" fill="#0f172a">D</text>
+            <text x="354" y="122" text-anchor="middle" font-family="Times New Roman, Times, serif" font-style="italic" font-size="24" fill="#0f172a">E</text>
+          </svg>`
+        };
+      },
+
+      // Q16: AB // CD, AE = AB, BE = CE, AEF straight line, <BAE = bae (divisible by 4), find <ECB = (180 - bae)/4
+      (prevKey, useInitial) => {
+        const pool = [
+          { bae: 116 },
+          { bae: 112 },
+          { bae: 120 },
+          { bae: 108 },
+          { bae: 124 },
+          { bae: 104 }
+        ];
+        const p = useInitial ? pool[0] : pickNewParam(pool, prevKey);
+
+        // In isosceles triangle ABE (AE = AB): <AEB = <ABE = (180° - <BAE) / 2
+        // Since AB // CD: <BEC = 180° - <ABE (int. <s, AB // CD)
+        // In isosceles triangle BCE (BE = CE): <ECB = <EBC = (180° - <BEC) / 2 = <ABE / 2 = (180° - <BAE) / 4
+        const abe = (180 - p.bae) / 2;
+        const bec = 180 - abe;
+        const ecb = abe / 2;
+        const cef = 180 - p.bae;
+        const { options, correct } = buildOptions(ecb, [abe, cef, 90 - ecb, ecb + 10], true);
+
+        // --- Large, bold true-to-scale SVG in compact 480x360 viewBox ---
+        const rad = Math.PI / 180;
+        const vbW = 480;
+        const yA = 65;
+        const H_desired = 195;
+
+        const Ex_u = 0;
+        const Ax_u = Ex_u - 1 / Math.tan(p.bae * rad);
+        const Bx_u = Ex_u + 1 / Math.tan(abe * rad);
+        const L_u = Math.hypot(Bx_u - Ex_u, 1); // |BE| = |AE| = |AB|
+        const Cx_u = Ex_u - L_u;                // |CE| = |BE|
+
+        const minX_u = Math.min(Ax_u, Bx_u, Cx_u, Ex_u);
+        const maxX_u = Math.max(Ax_u, Bx_u, Cx_u, Ex_u);
+        const maxAvailW = vbW - 88;
+        const h = Math.min(H_desired, maxAvailW / (maxX_u - minX_u));
+        const yC = yA + h;
+
+        const mapX = (x_u) => (vbW / 2) + (x_u - (minX_u + maxX_u) / 2) * h;
+        const Ax = mapX(Ax_u);
+        const Bx = mapX(Bx_u);
+        const Cx = mapX(Cx_u);
+        const Ex = mapX(Ex_u);
+
+        const lineAB_x1 = Math.min(Ax, Bx) - 26;
+        const lineAB_x2 = Math.max(Ax, Bx) + 26;
+        const lineCD_x1 = Math.min(Cx, Ex) - 26;
+        const lineCD_x2 = Math.max(Cx, Ex) + 52;
+
+        const lenAE = Math.hypot(Ex - Ax, yC - yA);
+        const uxAE = (Ex - Ax) / lenAE;
+        const uyAE = (yC - yA) / lenAE;
+        const extF = 62;
+        const Fx = Ex + uxAE * extF;
+        const Fy = yC + uyAE * extF;
+
+        // Single tick marks on AE and AB (AE = AB)
+        const midAE_x = (Ax + Ex) / 2;
+        const midAE_y = (yA + yC) / 2;
+        const nxAE = -(yC - yA) / lenAE;
+        const nyAE = (Ex - Ax) / lenAE;
+        const midAB_x = (Ax + Bx) / 2;
+
+        // Double tick marks on BE and CE (BE = CE)
+        const midBE_x = (Bx + Ex) / 2;
+        const midBE_y = (yA + yC) / 2;
+        const lenBE = Math.hypot(Ex - Bx, yC - yA);
+        const nxBE = -(yC - yA) / lenBE;
+        const nyBE = (Ex - Bx) / lenBE;
+        const uxBE = (Ex - Bx) / lenBE;
+        const uyBE = (yC - yA) / lenBE;
+        const midCE_x = (Cx + Ex) / 2;
+
+        // Arc for <BAE
+        const rA = 36;
+        const arcA_x1 = Ax + rA;
+        const arcA_y1 = yA;
+        const arcA_x2 = Ax + rA * Math.cos(p.bae * rad);
+        const arcA_y2 = yA + rA * Math.sin(p.bae * rad);
+        const bisA = (p.bae / 2) * rad;
+        const lblA_x = Ax + (rA + 22) * Math.cos(bisA);
+        const lblA_y = yA + (rA + 22) * Math.sin(bisA) + 6;
+
+        const arrTopX = (lineAB_x1 + lineAB_x2) / 2;
+        const arrBotX = lineCD_x2 - 32;
+
+        return {
+          key: JSON.stringify(p),
+          question: `<span style="font-weight: 800; margin-right: 6px;">16.</span>In the figure, ${mv('AB')} ${mt('//')} ${mv('CD')}, ${mv('AE')} ${mt('=')} ${mv('AB')}, ${mv('BE')} ${mt('=')} ${mv('CE')}, and ${mv('AEF')} is a straight line intersecting ${mv('CD')} at ${mv('E')}. If ${mt('&ang;')}${mv('BAE')} ${mt(`= ${p.bae}&deg;`)}, find ${mt('&ang;')}${mv('ECB')}.`,
+          options,
+          correct,
+          explanation: `In ${mt('&Delta;')}${mv('ABE')}, since ${mv('AE')} = ${mv('AB')}, ${mt('&ang;')}${mv('ABE')} = ${mt('&ang;')}${mv('AEB')} = (180&deg; &minus; ${p.bae}&deg;) &divide; 2 = ${abe}&deg; (base ${mt('&ang;')}s, isos. ${mt('&Delta;')}). Since ${mv('AB')} // ${mv('CD')}, ${mt('&ang;')}${mv('BEC')} = 180&deg; &minus; ${abe}&deg; = ${bec}&deg; (int. ${mt('&ang;')}s, ${mv('AB')} // ${mv('CD')}). In ${mt('&Delta;')}${mv('BCE')}, since ${mv('BE')} = ${mv('CE')}, ${mt('&ang;')}${mv('ECB')} = (180&deg; &minus; ${bec}&deg;) &divide; 2 = ${ecb}&deg;.`,
+          svg: `<svg width="100%" height="100%" viewBox="0 0 480 360">
+            <!-- Parallel lines AB and CD -->
+            <line x1="${lineAB_x1.toFixed(1)}" y1="${yA.toFixed(1)}" x2="${lineAB_x2.toFixed(1)}" y2="${yA.toFixed(1)}" stroke="#0f172a" stroke-width="2.6" stroke-linecap="round"/>
+            <line x1="${lineCD_x1.toFixed(1)}" y1="${yC.toFixed(1)}" x2="${lineCD_x2.toFixed(1)}" y2="${yC.toFixed(1)}" stroke="#0f172a" stroke-width="2.6" stroke-linecap="round"/>
+
+            <!-- Transversal AEF and triangle BCE -->
+            <line x1="${Ax.toFixed(1)}" y1="${yA.toFixed(1)}" x2="${Fx.toFixed(1)}" y2="${Fy.toFixed(1)}" stroke="#0f172a" stroke-width="2.6" stroke-linecap="round"/>
+            <line x1="${Bx.toFixed(1)}" y1="${yA.toFixed(1)}" x2="${Ex.toFixed(1)}" y2="${yC.toFixed(1)}" stroke="#0f172a" stroke-width="2.6"/>
+            <line x1="${Bx.toFixed(1)}" y1="${yA.toFixed(1)}" x2="${Cx.toFixed(1)}" y2="${yC.toFixed(1)}" stroke="#0f172a" stroke-width="2.6"/>
+
+            <!-- Parallel arrows -->
+            <polyline points="${(arrTopX - 6).toFixed(1)},${(yA - 7).toFixed(1)} ${(arrTopX + 6).toFixed(1)},${yA.toFixed(1)} ${(arrTopX - 6).toFixed(1)},${(yA + 7).toFixed(1)}" fill="none" stroke="#0f172a" stroke-width="2.3"/>
+            <polyline points="${(arrBotX - 6).toFixed(1)},${(yC - 7).toFixed(1)} ${(arrBotX + 6).toFixed(1)},${yC.toFixed(1)} ${(arrBotX - 6).toFixed(1)},${(yC + 7).toFixed(1)}" fill="none" stroke="#0f172a" stroke-width="2.3"/>
+
+            <!-- Equal side single ticks on AE and AB -->
+            <line x1="${(midAE_x - 10 * nxAE).toFixed(1)}" y1="${(midAE_y - 10 * nyAE).toFixed(1)}" x2="${(midAE_x + 10 * nxAE).toFixed(1)}" y2="${(midAE_y + 10 * nyAE).toFixed(1)}" stroke="#0f172a" stroke-width="2.6"/>
+            <line x1="${midAB_x.toFixed(1)}" y1="${(yA - 10).toFixed(1)}" x2="${midAB_x.toFixed(1)}" y2="${(yA + 10).toFixed(1)}" stroke="#0f172a" stroke-width="2.6"/>
+
+            <!-- Equal side double ticks on BE and CE -->
+            <line x1="${(midBE_x - 4 * uxBE - 9 * nxBE).toFixed(1)}" y1="${(midBE_y - 4 * uyBE - 9 * nyBE).toFixed(1)}" x2="${(midBE_x - 4 * uxBE + 9 * nxBE).toFixed(1)}" y2="${(midBE_y - 4 * uyBE + 9 * nyBE).toFixed(1)}" stroke="#0f172a" stroke-width="2.3"/>
+            <line x1="${(midBE_x + 4 * uxBE - 9 * nxBE).toFixed(1)}" y1="${(midBE_y + 4 * uyBE - 9 * nyBE).toFixed(1)}" x2="${(midBE_x + 4 * uxBE + 9 * nxBE).toFixed(1)}" y2="${(midBE_y + 4 * uyBE + 9 * nyBE).toFixed(1)}" stroke="#0f172a" stroke-width="2.3"/>
+            <line x1="${(midCE_x - 4).toFixed(1)}" y1="${(yC - 9).toFixed(1)}" x2="${(midCE_x - 4).toFixed(1)}" y2="${(yC + 9).toFixed(1)}" stroke="#0f172a" stroke-width="2.3"/>
+            <line x1="${(midCE_x + 4).toFixed(1)}" y1="${(yC - 9).toFixed(1)}" x2="${(midCE_x + 4).toFixed(1)}" y2="${(yC + 9).toFixed(1)}" stroke="#0f172a" stroke-width="2.3"/>
+
+            <!-- Angle BAE -->
+            <path d="M ${arcA_x1.toFixed(1)},${arcA_y1.toFixed(1)} A ${rA},${rA} 0 0,1 ${arcA_x2.toFixed(1)},${arcA_y2.toFixed(1)}" fill="none" stroke="#0f172a" stroke-width="2"/>
+            <text x="${lblA_x.toFixed(1)}" y="${lblA_y.toFixed(1)}" text-anchor="middle" font-family="Times New Roman, Times, serif" font-size="20" fill="#0f172a">${p.bae}&deg;</text>
+
+            <!-- Vertex Labels -->
+            <text x="${Ax.toFixed(1)}" y="${(yA - 14).toFixed(1)}" text-anchor="middle" font-family="Times New Roman, Times, serif" font-style="italic" font-size="25" fill="#0f172a">A</text>
+            <text x="${Bx.toFixed(1)}" y="${(yA - 14).toFixed(1)}" text-anchor="middle" font-family="Times New Roman, Times, serif" font-style="italic" font-size="25" fill="#0f172a">B</text>
+            <text x="${Cx.toFixed(1)}" y="${(yC + 28).toFixed(1)}" text-anchor="middle" font-family="Times New Roman, Times, serif" font-style="italic" font-size="25" fill="#0f172a">C</text>
+            <text x="${Ex.toFixed(1)}" y="${(yC + 28).toFixed(1)}" text-anchor="middle" font-family="Times New Roman, Times, serif" font-style="italic" font-size="25" fill="#0f172a">E</text>
+            <text x="${(lineCD_x2 + 15).toFixed(1)}" y="${(yC + 8).toFixed(1)}" text-anchor="middle" font-family="Times New Roman, Times, serif" font-style="italic" font-size="25" fill="#0f172a">D</text>
+            <text x="${(Fx + uxAE * 17).toFixed(1)}" y="${(Fy + uyAE * 17 + 7).toFixed(1)}" text-anchor="middle" font-family="Times New Roman, Times, serif" font-style="italic" font-size="25" fill="#0f172a">F</text>
+          </svg>`
+        };
+      },
+
+      // Q17: AB // CD, BCD straight line, AC = AD, <BAC = (2x - d1), <ADE = (3x + d2) => 5x + (d2 - d1) = 180
+      (prevKey, useInitial) => {
+        const pool = [
+          { d1: 14, d2: 34, x: 32 },
+          { d1: 10, d2: 50, x: 28 },
+          { d1: 16, d2: 16, x: 36 },
+          { d1: 12, d2: 42, x: 30 },
+          { d1: 18, d2: 28, x: 34 },
+          { d1: 8,  d2: 48, x: 28 }
+        ];
+        const p = useInitial ? pool[0] : pickNewParam(pool, prevKey);
+        const netConst = p.d2 - p.d1;
+        const { options, correct } = buildOptions(p.x, [p.x - 4, p.x + 4, p.x + 8, p.d1 + p.d2], false);
+        return {
+          key: JSON.stringify(p),
+          question: `<span style="font-weight: 800; margin-right: 6px;">17.</span>In the figure, ${mv('AB')} ${mt('//')} ${mv('CD')}, ${mv('BCD')} is a straight line, and ${mv('AC')} ${mt('=')} ${mv('AD')}. If ${mt('&ang;')}${mv('BAC')} ${mt('= (2')}${mv('x')}${mt(` &minus; ${p.d1})&deg;`)} and the exterior angle ${mt('&ang;')}${mv('ADE')} ${mt('= (3')}${mv('x')}${mt(` + ${p.d2})&deg;`)} (where ${mv('CD')} is produced to ${mv('E')}), find ${mv('x')}.`,
+          options,
+          correct,
+          explanation: `Since ${mv('AB')} // ${mv('CD')}, ${mt('&ang;')}${mv('ACD')} = ${mt('&ang;')}${mv('BAC')} = (2${mv('x')} &minus; ${p.d1})&deg; (alt. ${mt('&ang;')}s, ${mv('AB')} // ${mv('CD')}). Since ${mv('AC')} = ${mv('AD')}, ${mt('&ang;')}${mv('ADC')} = ${mt('&ang;')}${mv('ACD')} = (2${mv('x')} &minus; ${p.d1})&deg;. By adj. ${mt('&ang;')}s on st. line ${mv('CDE')}: (2${mv('x')} &minus; ${p.d1}) + (3${mv('x')} + ${p.d2}) = 180 &rArr; 5${mv('x')} + ${netConst} = 180 &rArr; ${mv('x')} = ${p.x}.`,
+          svg: `<svg width="100%" height="100%" viewBox="0 0 475 370">
+            <line x1="65" y1="95" x2="225" y2="95" stroke="#0f172a" stroke-width="2.5" stroke-linecap="round"/>
+            <line x1="30" y1="270" x2="445" y2="270" stroke="#0f172a" stroke-width="2.5" stroke-linecap="round"/>
+            <line x1="225" y1="95" x2="78.2" y2="270" stroke="#0f172a" stroke-width="2.5" stroke-linejoin="round"/>
+            <line x1="225" y1="95" x2="371.8" y2="270" stroke="#0f172a" stroke-width="2.5" stroke-linejoin="round"/>
+            <polyline points="140,88 151,95 140,102" fill="none" stroke="#0f172a" stroke-width="2.2"/>
+            <polyline points="220,263 231,270 220,277" fill="none" stroke="#0f172a" stroke-width="2.2"/>
+            <line x1="144" y1="176" x2="159" y2="189" stroke="#0f172a" stroke-width="2.5"/>
+            <line x1="306" y1="176" x2="291" y2="189" stroke="#0f172a" stroke-width="2.5"/>
+            <path d="M 179,95 A 46,46 0 0,0 195.4,130.2" fill="none" stroke="#0f172a" stroke-width="2"/>
+            <text x="142" y="132" text-anchor="middle" font-family="Times New Roman, Times, serif" font-size="18" fill="#0f172a">
+              (2<tspan font-style="italic">x</tspan> &minus; ${p.d1})&deg;
+            </text>
+            <path d="M 347.4,240.9 A 38,38 0 0,1 409.8,270" fill="none" stroke="#0f172a" stroke-width="2"/>
+            <text x="415" y="228" text-anchor="middle" font-family="Times New Roman, Times, serif" font-size="18" fill="#0f172a">
+              (3<tspan font-style="italic">x</tspan> + ${p.d2})&deg;
+            </text>
+            <text x="232" y="82" text-anchor="middle" font-family="Times New Roman, Times, serif" font-style="italic" font-size="24" fill="#0f172a">A</text>
+            <text x="50" y="102" text-anchor="middle" font-family="Times New Roman, Times, serif" font-style="italic" font-size="24" fill="#0f172a">B</text>
+            <text x="78" y="298" text-anchor="middle" font-family="Times New Roman, Times, serif" font-style="italic" font-size="24" fill="#0f172a">C</text>
+            <text x="372" y="298" text-anchor="middle" font-family="Times New Roman, Times, serif" font-style="italic" font-size="24" fill="#0f172a">D</text>
+            <text x="458" y="277" text-anchor="middle" font-family="Times New Roman, Times, serif" font-style="italic" font-size="24" fill="#0f172a">E</text>
+          </svg>`
+        };
+      },
+
+      // Q18: AB // CD, GEF straight line, EF = FH, EK = EH, <AEG = a (divisible by 4), find ext <BKH = 90 + a/4
+      (prevKey, useInitial) => {
+        const pool = [
+          { a: 64 }, { a: 56 }, { a: 60 }, { a: 68 }, { a: 72 }, { a: 52 }, { a: 76 }
+        ];
+        const p = useInitial ? pool[0] : pickNewParam(pool, prevKey);
+        const efh = 180 - p.a;
+        const fhe = (180 - efh) / 2;
+        const ehk = (180 - fhe) / 2;
+        const bkh = fhe + ehk;
+        const { options, correct } = buildOptions(bkh, [ehk, 180 - bkh, 180 - p.a, bkh + 10], true);
+        return {
+          key: JSON.stringify(p),
+          question: `<span style="font-weight: 800; margin-right: 6px;">18.</span>In the figure, ${mv('AB')} ${mt('//')} ${mv('CD')}, ${mv('GEF')} is a straight line, ${mv('EF')} ${mt('=')} ${mv('FH')}, and ${mv('EK')} ${mt('=')} ${mv('EH')}. If ${mt('&ang;')}${mv('AEG')} ${mt(`= ${p.a}&deg;`)}, find the exterior angle ${mt('&ang;')}${mv('BKH')}.`,
+          options,
+          correct,
+          explanation: `${mt('&ang;')}${mv('BEF')} = ${mt('&ang;')}${mv('AEG')} = ${p.a}&deg; (vert. opp. ${mt('&ang;')}s). Since ${mv('AB')} // ${mv('CD')}, ${mt('&ang;')}${mv('EFH')} = 180&deg; &minus; ${p.a}&deg; = ${efh}&deg; (int. ${mt('&ang;')}s, ${mv('AB')} // ${mv('CD')}). Since ${mv('EF')} = ${mv('FH')}, ${mt('&ang;')}${mv('FHE')} = (180&deg; &minus; ${efh}&deg;) &divide; 2 = ${fhe}&deg;. Since ${mv('AB')} // ${mv('CD')}, ${mt('&ang;')}${mv('KEH')} = ${mt('&ang;')}${mv('FHE')} = ${fhe}&deg; (alt. ${mt('&ang;')}s). Since ${mv('EK')} = ${mv('EH')}, ${mt('&ang;')}${mv('EHK')} = (180&deg; &minus; ${fhe}&deg;) &divide; 2 = ${ehk}&deg;. By ext. ${mt('&ang;')} of ${mt('&Delta;')}${mv('EKH')}, ${mt('&ang;')}${mv('BKH')} = ${fhe}&deg; + ${ehk}&deg; = ${bkh}&deg;.`,
+          svg: `<svg width="100%" height="100%" viewBox="0 0 475 350">
+            <line x1="35.0" y1="105.0" x2="455.0" y2="105.0" stroke="#0f172a" stroke-width="2.5" stroke-linecap="round"/>
+            <line x1="35.0" y1="265.0" x2="425.0" y2="265.0" stroke="#0f172a" stroke-width="2.5" stroke-linecap="round"/>
+            <line x1="87.2" y1="58.3" x2="188.0" y2="265.0" stroke="#0f172a" stroke-width="2.5" stroke-linecap="round"/>
+            <line x1="110.0" y1="105.0" x2="366.1" y2="265.0" stroke="#0f172a" stroke-width="2.5"/>
+            <line x1="411.9" y1="105.0" x2="366.1" y2="265.0" stroke="#0f172a" stroke-width="2.5"/>
+            <polyline points="235,98.0 246,105.0 235,112.0" fill="none" stroke="#0f172a" stroke-width="2.2"/>
+            <polyline points="105,258.0 116,265.0 105,272.0" fill="none" stroke="#0f172a" stroke-width="2.2"/>
+            <line x1="157.1" y1="181.1" x2="140.9" y2="188.9" stroke="#0f172a" stroke-width="2.3"/>
+            <line x1="277.0" y1="256.0" x2="277.0" y2="274.0" stroke="#0f172a" stroke-width="2.3"/>
+            <line x1="257.5" y1="96.0" x2="257.5" y2="114.0" stroke="#0f172a" stroke-width="2.3"/>
+            <line x1="264.5" y1="96.0" x2="264.5" y2="114.0" stroke="#0f172a" stroke-width="2.3"/>
+            <line x1="239.8" y1="175.5" x2="230.3" y2="190.8" stroke="#0f172a" stroke-width="2.3"/>
+            <line x1="245.8" y1="179.2" x2="236.2" y2="194.5" stroke="#0f172a" stroke-width="2.3"/>
+            <path d="M 68.0,105.0 A 42,42 0 0,1 91.6,67.3" fill="none" stroke="#0f172a" stroke-width="2"/>
+            <text x="55.7" y="77.1" text-anchor="middle" font-family="Times New Roman, Times, serif" font-size="19" fill="#0f172a">${p.a}&deg;</text>
+            <path d="M 447.9,105.0 A 36,36 0 0,1 402.0,139.6" fill="none" stroke="#0f172a" stroke-width="2"/>
+            <text x="445.6" y="155.7" text-anchor="middle" font-family="Times New Roman, Times, serif" font-style="italic" font-size="20" fill="#0f172a">&theta;</text>
+            <text x="23.0" y="112.0" text-anchor="middle" font-family="Times New Roman, Times, serif" font-style="italic" font-size="23" fill="#0f172a">A</text>
+            <text x="77.2" y="52.3" text-anchor="middle" font-family="Times New Roman, Times, serif" font-style="italic" font-size="23" fill="#0f172a">G</text>
+            <text x="116.0" y="91.0" text-anchor="middle" font-family="Times New Roman, Times, serif" font-style="italic" font-size="23" fill="#0f172a">E</text>
+            <text x="411.9" y="91.0" text-anchor="middle" font-family="Times New Roman, Times, serif" font-style="italic" font-size="23" fill="#0f172a">K</text>
+            <text x="467.0" y="112.0" text-anchor="middle" font-family="Times New Roman, Times, serif" font-style="italic" font-size="23" fill="#0f172a">B</text>
+            <text x="23.0" y="272.0" text-anchor="middle" font-family="Times New Roman, Times, serif" font-style="italic" font-size="23" fill="#0f172a">C</text>
+            <text x="188.0" y="291.0" text-anchor="middle" font-family="Times New Roman, Times, serif" font-style="italic" font-size="23" fill="#0f172a">F</text>
+            <text x="366.1" y="291.0" text-anchor="middle" font-family="Times New Roman, Times, serif" font-style="italic" font-size="23" fill="#0f172a">H</text>
+            <text x="437.0" y="272.0" text-anchor="middle" font-family="Times New Roman, Times, serif" font-style="italic" font-size="23" fill="#0f172a">D</text>
+          </svg>`
+        };
+      },
+
+      // Q19: AB // CD, EPQ straight line, EP = FP, <AEP = aep, ext <QPF = qpf (even), find <PFD = aep - qpf
+      (prevKey, useInitial) => {
+        const pool = [
+          { aep: 134, qpf: 74 },
+          { aep: 128, qpf: 64 },
+          { aep: 136, qpf: 68 },
+          { aep: 124, qpf: 72 },
+          { aep: 130, qpf: 76 },
+          { aep: 138, qpf: 72 }
+        ];
+        const p = useInitial ? pool[0] : pickNewParam(pool, prevKey);
+        const epf = 180 - p.qpf;
+        const pef = p.qpf / 2;
+        const bep = 180 - p.aep;
+        const bef = bep + pef;
+        const cfe = bef; // alt. <s, AB // CD
+        const cfp = cfe + pef;
+        const pfd = 180 - cfp; // equals p.aep - p.qpf (= 60 for initial)
+        const { options, correct } = buildOptions(pfd, [180 - pfd, epf, bep + pef, pfd + 12], true);
+
+        // True-to-scale SVG coordinates
+        const rad = Math.PI / 180;
+        const yA = 80.0;
+        const yC = 310.0;
+        const H = yC - yA;
+        const Ex = 125.0;
+        const angEF = bef * rad; // angle below horizontal right
+        const Fx = Ex + H / Math.tan(angEF);
+        const lenEF = Math.hypot(Fx - Ex, H);
+        // In isosceles triangle EPF with EP = FP and base angle pef:
+        const lenEP = (lenEF / 2) / Math.cos(pef * rad);
+        const angEP = bep * rad;
+        const Px = Ex + lenEP * Math.cos(angEP);
+        const Py = yA + lenEP * Math.sin(angEP);
+        const Qx = Px + 58 * Math.cos(angEP);
+        const Qy = Py + 58 * Math.sin(angEP);
+
+        // Tick marks on EP and FP
+        const midEP_x = (Ex + Px) / 2, midEP_y = (yA + Py) / 2;
+        const nxEP = -(Py - yA) / lenEP, nyEP = (Px - Ex) / lenEP;
+        const midFP_x = (Fx + Px) / 2, midFP_y = (yC + Py) / 2;
+        const nxFP = -(Py - yC) / lenEP, nyFP = (Px - Fx) / lenEP;
+
+        // Arc <AEP (from ray EP at angEP clockwise to ray EA at 180 deg)
+        const rE = 38;
+        const eArc1_x = Ex + rE * Math.cos(angEP), eArc1_y = yA + rE * Math.sin(angEP);
+        const eArc2_x = Ex - rE, eArc2_y = yA;
+        const bisE = ((bep + 180) / 2) * rad;
+        const eLbl_x = Ex + (rE + 24) * Math.cos(bisE), eLbl_y = yA + (rE + 24) * Math.sin(bisE) + 6;
+
+        // Arc <QPF (from ray PQ at angEP clockwise to ray PF at (180 - pfd) deg)
+        const angPF = (180 - pfd) * rad;
+        const rP = 36;
+        const pArc1_x = Px + rP * Math.cos(angEP), pArc1_y = Py + rP * Math.sin(angEP);
+        const pArc2_x = Px + rP * Math.cos(angPF), pArc2_y = Py + rP * Math.sin(angPF);
+        const bisP = ((bep + (180 - pfd)) / 2) * rad;
+        const pLbl_x = Px + (rP + 22) * Math.cos(bisP), pLbl_y = Py + (rP + 22) * Math.sin(bisP) + 6;
+
+        // Arc <PFD (from ray FP at (-pfd) deg clockwise to ray FD at 0 deg)
+        const angFP = -pfd * rad;
+        const rF = 36;
+        const fArc1_x = Fx + rF * Math.cos(angFP), fArc1_y = yC + rF * Math.sin(angFP);
+        const fArc2_x = Fx + rF, fArc2_y = yC;
+        const bisF = (-pfd / 2) * rad;
+        const fLbl_x = Fx + (rF + 18) * Math.cos(bisF), fLbl_y = yC + (rF + 18) * Math.sin(bisF) + 5;
+
+        return {
+          key: JSON.stringify(p),
+          question: `<span style="font-weight: 800; margin-right: 6px;">19.</span>In the figure, ${mv('AB')} ${mt('//')} ${mv('CD')}, ${mv('EPQ')} is a straight line, and ${mv('EP')} ${mt('=')} ${mv('FP')}. If ${mt('&ang;')}${mv('AEP')} ${mt(`= ${p.aep}&deg;`)} and the exterior angle ${mt('&ang;')}${mv('QPF')} ${mt(`= ${p.qpf}&deg;`)}, find ${mt('&ang;')}${mv('PFD')}.`,
+          options,
+          correct,
+          explanation: `Since ${mv('EPQ')} is a straight line, ${mt('&ang;')}${mv('EPF')} = 180&deg; &minus; ${p.qpf}&deg; = ${epf}&deg;. Since ${mv('EP')} = ${mv('FP')}, ${mt('&ang;')}${mv('PEF')} = ${mt('&ang;')}${mv('PFE')} = (180&deg; &minus; ${epf}&deg;) &divide; 2 = ${pef}&deg;. Since ${mt('&ang;')}${mv('AEP')} = ${p.aep}&deg;, ${mt('&ang;')}${mv('BEP')} = 180&deg; &minus; ${p.aep}&deg; = ${bep}&deg;, so ${mt('&ang;')}${mv('BEF')} = ${bep}&deg; + ${pef}&deg; = ${bef}&deg;. Since ${mv('AB')} // ${mv('CD')}, ${mt('&ang;')}${mv('CFE')} = ${mt('&ang;')}${mv('BEF')} = ${cfe}&deg; (alt. ${mt('&ang;')}s, ${mv('AB')} // ${mv('CD')}), giving ${mt('&ang;')}${mv('CFP')} = ${cfe}&deg; + ${pef}&deg; = ${cfp}&deg;. Thus, ${mt('&ang;')}${mv('PFD')} = 180&deg; &minus; ${cfp}&deg; = ${pfd}&deg;.`,
+          svg: `<svg width="100%" height="100%" viewBox="0 0 430 370">
+            <line x1="35.0" y1="${yA.toFixed(1)}" x2="385.0" y2="${yA.toFixed(1)}" stroke="#0f172a" stroke-width="2.5" stroke-linecap="round"/>
+            <line x1="35.0" y1="${yC.toFixed(1)}" x2="385.0" y2="${yC.toFixed(1)}" stroke="#0f172a" stroke-width="2.5" stroke-linecap="round"/>
+            <line x1="${Ex.toFixed(1)}" y1="${yA.toFixed(1)}" x2="${Qx.toFixed(1)}" y2="${Qy.toFixed(1)}" stroke="#0f172a" stroke-width="2.5" stroke-linecap="round"/>
+            <line x1="${Px.toFixed(1)}" y1="${Py.toFixed(1)}" x2="${Fx.toFixed(1)}" y2="${yC.toFixed(1)}" stroke="#0f172a" stroke-width="2.5"/>
+            <line x1="${Ex.toFixed(1)}" y1="${yA.toFixed(1)}" x2="${Fx.toFixed(1)}" y2="${yC.toFixed(1)}" stroke="#0f172a" stroke-width="2.2" stroke-dasharray="5,4"/>
+            <polyline points="275,73.0 286,80.0 275,87.0" fill="none" stroke="#0f172a" stroke-width="2.2"/>
+            <polyline points="275,303.0 286,310.0 275,317.0" fill="none" stroke="#0f172a" stroke-width="2.2"/>
+            <line x1="${(midEP_x - 9 * nxEP).toFixed(1)}" y1="${(midEP_y - 9 * nyEP).toFixed(1)}" x2="${(midEP_x + 9 * nxEP).toFixed(1)}" y2="${(midEP_y + 9 * nyEP).toFixed(1)}" stroke="#0f172a" stroke-width="2.3"/>
+            <line x1="${(midFP_x - 9 * nxFP).toFixed(1)}" y1="${(midFP_y - 9 * nyFP).toFixed(1)}" x2="${(midFP_x + 9 * nxFP).toFixed(1)}" y2="${(midFP_y + 9 * nyFP).toFixed(1)}" stroke="#0f172a" stroke-width="2.3"/>
+            <path d="M ${eArc1_x.toFixed(1)},${eArc1_y.toFixed(1)} A ${rE},${rE} 0 0,1 ${eArc2_x.toFixed(1)},${eArc2_y.toFixed(1)}" fill="none" stroke="#0f172a" stroke-width="2"/>
+            <text x="${eLbl_x.toFixed(1)}" y="${eLbl_y.toFixed(1)}" text-anchor="middle" font-family="Times New Roman, Times, serif" font-size="19" fill="#0f172a">${p.aep}&deg;</text>
+            <path d="M ${pArc1_x.toFixed(1)},${pArc1_y.toFixed(1)} A ${rP},${rP} 0 0,1 ${pArc2_x.toFixed(1)},${pArc2_y.toFixed(1)}" fill="none" stroke="#0f172a" stroke-width="2"/>
+            <text x="${pLbl_x.toFixed(1)}" y="${pLbl_y.toFixed(1)}" text-anchor="middle" font-family="Times New Roman, Times, serif" font-size="19" fill="#0f172a">${p.qpf}&deg;</text>
+            <path d="M ${fArc1_x.toFixed(1)},${fArc1_y.toFixed(1)} A ${rF},${rF} 0 0,1 ${fArc2_x.toFixed(1)},${fArc2_y.toFixed(1)}" fill="none" stroke="#0f172a" stroke-width="2"/>
+            <text x="${fLbl_x.toFixed(1)}" y="${fLbl_y.toFixed(1)}" text-anchor="middle" font-family="Times New Roman, Times, serif" font-style="italic" font-size="20" fill="#0f172a">&phi;</text>
+            <text x="23.0" y="87.0" text-anchor="middle" font-family="Times New Roman, Times, serif" font-style="italic" font-size="23" fill="#0f172a">A</text>
+            <text x="${Ex.toFixed(1)}" y="66.0" text-anchor="middle" font-family="Times New Roman, Times, serif" font-style="italic" font-size="23" fill="#0f172a">E</text>
+            <text x="397.0" y="87.0" text-anchor="middle" font-family="Times New Roman, Times, serif" font-style="italic" font-size="23" fill="#0f172a">B</text>
+            <text x="${(Px + 16).toFixed(1)}" y="${(Py - 6).toFixed(1)}" text-anchor="middle" font-family="Times New Roman, Times, serif" font-style="italic" font-size="23" fill="#0f172a">P</text>
+            <text x="${(Qx + 12).toFixed(1)}" y="${(Qy + 14).toFixed(1)}" text-anchor="middle" font-family="Times New Roman, Times, serif" font-style="italic" font-size="23" fill="#0f172a">Q</text>
+            <text x="23.0" y="317.0" text-anchor="middle" font-family="Times New Roman, Times, serif" font-style="italic" font-size="23" fill="#0f172a">C</text>
+            <text x="${Fx.toFixed(1)}" y="336.0" text-anchor="middle" font-family="Times New Roman, Times, serif" font-style="italic" font-size="23" fill="#0f172a">F</text>
+            <text x="397.0" y="317.0" text-anchor="middle" font-family="Times New Roman, Times, serif" font-style="italic" font-size="23" fill="#0f172a">D</text>
+          </svg>`
+        };
+      },
+
+      // Q20: AB // CD, EFG straight line, EF = FH, <AEH = (4x + d1), <CFG = (3x - d2) => 5x = 180 - 2*d1 - d2
+      (prevKey, useInitial) => {
+        const pool = [
+          { d1: 22, d2: 6,  x: 26 },
+          { d1: 18, d2: 4,  x: 28 },
+          { d1: 20, d2: 20, x: 24 },
+          { d1: 14, d2: 2,  x: 30 },
+          { d1: 26, d2: 8,  x: 24 },
+          { d1: 16, d2: 8,  x: 28 }
+        ];
+        const p = useInitial ? pool[0] : pickNewParam(pool, prevKey);
+        const rem = 180 - p.d1;
+        const totConst = 2 * rem - p.d2;
+        const rhs = totConst - 180;
+        const { options, correct } = buildOptions(p.x, [p.x - 4, p.x + 2, p.x + 6, p.d1 + p.d2], false);
+        return {
+          key: JSON.stringify(p),
+          question: `<span style="font-weight: 800; margin-right: 6px;">20.</span>In the figure, ${mv('AB')} ${mt('//')} ${mv('CD')}, ${mv('EFG')} is a straight line, and ${mv('EF')} ${mt('=')} ${mv('FH')}. If ${mt('&ang;')}${mv('AEH')} ${mt('= (4')}${mv('x')}${mt(` + ${p.d1})&deg;`)} and ${mt('&ang;')}${mv('CFG')} ${mt('= (3')}${mv('x')}${mt(` &minus; ${p.d2})&deg;`)}, find ${mv('x')}.`,
+          options,
+          correct,
+          explanation: `By vert. opp. ${mt('&ang;')}s, ${mt('&ang;')}${mv('EFH')} = ${mt('&ang;')}${mv('CFG')} = (3${mv('x')} &minus; ${p.d2})&deg;. Since ${mv('AB')} // ${mv('CD')}, ${mt('&ang;')}${mv('EHF')} = 180&deg; &minus; (4${mv('x')} + ${p.d1})&deg; = (${rem} &minus; 4${mv('x')})&deg; (int. ${mt('&ang;')}s, ${mv('AB')} // ${mv('CD')}). Since ${mv('EF')} = ${mv('FH')}, ${mt('&ang;')}${mv('FEH')} = ${mt('&ang;')}${mv('EHF')} = (${rem} &minus; 4${mv('x')})&deg;. By ${mt('&ang;')} sum of ${mt('&Delta;')}${mv('EFH')}: (3${mv('x')} &minus; ${p.d2}) + (${rem} &minus; 4${mv('x')}) + (${rem} &minus; 4${mv('x')}) = 180 &rArr; ${totConst} &minus; 5${mv('x')} = 180 &rArr; 5${mv('x')} = ${rhs} &rArr; ${mv('x')} = ${p.x}.`,
+          svg: `<svg width="100%" height="100%" viewBox="0 0 450 365">
+            <line x1="40.0" y1="95.0" x2="415.0" y2="95.0" stroke="#0f172a" stroke-width="2.5" stroke-linecap="round"/>
+            <line x1="40.0" y1="260.0" x2="415.0" y2="260.0" stroke="#0f172a" stroke-width="2.5" stroke-linecap="round"/>
+            <line x1="141.4" y1="95.0" x2="215.1" y2="321.8" stroke="#0f172a" stroke-width="2.5" stroke-linecap="round"/>
+            <line x1="141.4" y1="95.0" x2="368.5" y2="260.0" stroke="#0f172a" stroke-width="2.5"/>
+            <polyline points="295,88.0 306,95.0 295,102.0" fill="none" stroke="#0f172a" stroke-width="2.2"/>
+            <polyline points="110,253.0 121,260.0 110,267.0" fill="none" stroke="#0f172a" stroke-width="2.2"/>
+            <line x1="176.8" y1="174.7" x2="159.6" y2="180.3" stroke="#0f172a" stroke-width="2.3"/>
+            <line x1="281.7" y1="251.0" x2="281.7" y2="269.0" stroke="#0f172a" stroke-width="2.3"/>
+            <path d="M 186.7,127.9 A 56,56 0 0,1 85.4,95.0" fill="none" stroke="#0f172a" stroke-width="2.2"/>
+            <text x="86.0" y="168.0" text-anchor="middle" font-family="Times New Roman, Times, serif" font-size="18" fill="#0f172a">
+              (4<tspan font-style="italic">x</tspan> + ${p.d1})&deg;
+            </text>
+            <path d="M 205.5,292.3 A 34,34 0 0,1 161.0,260.0" fill="none" stroke="#0f172a" stroke-width="2"/>
+            <text x="138.2" y="319.4" text-anchor="middle" font-family="Times New Roman, Times, serif" font-size="18" fill="#0f172a">
+              (3<tspan font-style="italic">x</tspan> &minus; ${p.d2})&deg;
+            </text>
+            <text x="28.0" y="102.0" text-anchor="middle" font-family="Times New Roman, Times, serif" font-style="italic" font-size="23" fill="#0f172a">A</text>
+            <text x="141.4" y="81.0" text-anchor="middle" font-family="Times New Roman, Times, serif" font-style="italic" font-size="23" fill="#0f172a">E</text>
+            <text x="427.0" y="102.0" text-anchor="middle" font-family="Times New Roman, Times, serif" font-style="italic" font-size="23" fill="#0f172a">B</text>
+            <text x="28.0" y="267.0" text-anchor="middle" font-family="Times New Roman, Times, serif" font-style="italic" font-size="23" fill="#0f172a">C</text>
+            <text x="181.0" y="285.0" text-anchor="middle" font-family="Times New Roman, Times, serif" font-style="italic" font-size="23" fill="#0f172a">F</text>
+            <text x="368.5" y="285.0" text-anchor="middle" font-family="Times New Roman, Times, serif" font-style="italic" font-size="23" fill="#0f172a">H</text>
+            <text x="427.0" y="267.0" text-anchor="middle" font-family="Times New Roman, Times, serif" font-style="italic" font-size="23" fill="#0f172a">D</text>
+            <text x="227.1" y="335.8" text-anchor="middle" font-family="Times New Roman, Times, serif" font-style="italic" font-size="23" fill="#0f172a">G</text>
+          </svg>`
+        };
+      }
+    ];
+
+    let quizData = [];
+    let userAnswers = new Array(20).fill(null);
+
+    function generateAllQuestions(useInitial = false) {
+      const letters = ['A', 'B', 'C', 'D'];
+      const newQuizData = [];
+      for (let i = 0; i < 20; i++) {
+        const prevKey = quizData[i] ? quizData[i].key : null;
+        const generated = questionGenerators[i](prevKey, useInitial);
+        newQuizData.push(generated);
+
+        document.getElementById(`q${i}-question`).innerHTML = generated.question;
+        document.getElementById(`q${i}-svg`).innerHTML = generated.svg;
+
+        const optionsContainer = document.getElementById(`q${i}-options`);
+        optionsContainer.innerHTML = generated.options.map((optHtml, optIdx) => `
+          <button class="mc-option" onclick="answerQuiz(${i}, ${optIdx})">
+            <span class="opt-letter">${letters[optIdx]}</span>
+            ${optHtml}
+          </button>
+        `).join('');
+
+        const fb = document.getElementById(`q${i}-feedback`);
+        fb.className = 'quiz-feedback';
+        fb.innerHTML = '';
+      }
+      quizData = newQuizData;
+    }
+
+    function answerQuiz(qIndex, optIndex) {
+      if (userAnswers[qIndex] !== null) return;
+      userAnswers[qIndex] = optIndex;
+
+      const optionsContainer = document.getElementById(`q${qIndex}-options`);
+      const buttons = optionsContainer.querySelectorAll('.mc-option');
+      const feedbackEl = document.getElementById(`q${qIndex}-feedback`);
+      const correctIdx = quizData[qIndex].correct;
+
+      buttons.forEach((btn, idx) => {
+        btn.disabled = true;
+        if (idx === correctIdx) {
+          btn.classList.add('correct');
+        } else if (idx === optIndex) {
+          btn.classList.add('wrong');
+        } else {
+          btn.classList.add('dimmed');
+        }
+      });
+
+      const isCorrect = (optIndex === correctIdx);
+      feedbackEl.className = `quiz-feedback show ${isCorrect ? 'fb-correct' : 'fb-wrong'}`;
+      feedbackEl.innerHTML = `<strong>${isCorrect ? 'Correct! (+10 Marks)' : 'Incorrect (0 Marks).'}</strong> <span>${quizData[qIndex].explanation}</span>`;
+
+      updateQuizSummary();
+    }
+
+    function updateQuizSummary() {
+      let correctCount = 0;
+      let answeredCount = 0;
+      userAnswers.forEach((ans, idx) => {
+        if (ans !== null) {
+          answeredCount++;
+          if (ans === quizData[idx].correct) correctCount++;
+        }
+      });
+
+      const currentMarks = Math.min(MAX_SCORE, correctCount * MARKS_PER_QUESTION);
+
+      if (currentMarks > highScore) {
+        highScore = Math.min(MAX_SCORE, currentMarks);
+      }
+
+      document.getElementById('header-score').textContent = `Score: ${currentMarks} / ${MAX_SCORE}`;
+      document.getElementById('header-highscore').textContent = `High Score: ${highScore} / ${MAX_SCORE}`;
+      document.getElementById('score-value').textContent = currentMarks;
+      document.getElementById('summary-highscore').textContent = `Session High Score: ${highScore} / ${MAX_SCORE}`;
+
+      const msgEl = document.getElementById('quiz-summary-msg');
+      if (answeredCount < 20) {
+        msgEl.textContent = `You have answered ${answeredCount} of 20 questions (${currentMarks} marks so far). Complete all questions to see your final score.`;
+      } else if (currentMarks === MAX_SCORE) {
+        msgEl.textContent = "Outstanding mastery! You achieved the maximum 200 / 200 marks across all 20 triangle problems.";
+      } else {
+        msgEl.textContent = `You scored ${currentMarks} out of 200 marks (${correctCount}/20 correct). Click "Retake Quiz" to practice with a brand-new set of knowns for every question!`;
+      }
+    }
+
+    // Dynamic Symmetry Fold & Proof Step Animation (Slide 3 - Theorem)
+    let symAutoTimer = null;
+
+    function setSymmetryMode(mode) {
+      const foldGroup = document.getElementById('sym-fold-group');
+      const btnStatic = document.getElementById('btn-sym-static');
+      const btnFold = document.getElementById('btn-sym-fold');
+      if (!foldGroup) return;
+
+      if (mode === 'fold') {
+        btnStatic.classList.remove('active');
+        btnFold.classList.add('active');
+        foldGroup.style.opacity = '1';
+        requestAnimationFrame(() => {
+          foldGroup.classList.add('folded');
+        });
+        document.querySelectorAll('.proof-step-row').forEach((r, idx) => {
+          r.classList.toggle('active-step', idx >= 3);
+        });
+      } else {
+        btnFold.classList.remove('active');
+        btnStatic.classList.add('active');
+        foldGroup.classList.remove('folded');
+        foldGroup.style.opacity = '0';
+        document.querySelectorAll('.proof-step-row').forEach(r => r.classList.remove('active-step'));
+      }
+    }
+
+    function playSymmetryFold() {
+      if (symAutoTimer) clearTimeout(symAutoTimer);
+      setSymmetryMode('static');
+      symAutoTimer = setTimeout(() => {
+        setSymmetryMode('fold');
+      }, 320);
+    }
+
+    // Dynamic Symmetry Fold & Proof Step Animation (Slide 5 - Converse Theorem)
+    let convSymAutoTimer = null;
+
+    function setConverseSymmetryMode(mode) {
+      const foldGroup = document.getElementById('conv-sym-fold-group');
+      const btnStatic = document.getElementById('btn-conv-sym-static');
+      const btnFold = document.getElementById('btn-conv-sym-fold');
+      if (!foldGroup) return;
+
+      if (mode === 'fold') {
+        btnStatic.classList.remove('active');
+        btnFold.classList.add('active');
+        foldGroup.style.opacity = '1';
+        requestAnimationFrame(() => {
+          foldGroup.classList.add('folded');
+        });
+        document.querySelectorAll('.conv-proof-step-row').forEach((r, idx) => {
+          r.classList.toggle('active-step', idx >= 3);
+        });
+      } else {
+        btnFold.classList.remove('active');
+        btnStatic.classList.add('active');
+        foldGroup.classList.remove('folded');
+        foldGroup.style.opacity = '0';
+        document.querySelectorAll('.conv-proof-step-row').forEach(r => r.classList.remove('active-step'));
+      }
+    }
+
+    function playConverseSymmetryFold() {
+      if (convSymAutoTimer) clearTimeout(convSymAutoTimer);
+      setConverseSymmetryMode('static');
+      convSymAutoTimer = setTimeout(() => {
+        setConverseSymmetryMode('fold');
+      }, 320);
+    }
+
+    function resetQuiz() {
+      userAnswers = new Array(20).fill(null);
+      generateAllQuestions(false);
+      updateQuizSummary();
+      goToSlide(7);
+    }
+
+    function updateUI() {
+      slides.forEach((slide, index) => {
+        slide.classList.toggle('active', index === currentSlide);
+      });
+      dots.forEach((dot, index) => {
+        dot.classList.toggle('active', index === currentSlide);
+      });
+
+      btnPrev.disabled = (currentSlide === 0);
+      btnNext.disabled = (currentSlide === slides.length - 1);
+
+      if (currentSlide === 2) {
+        playSymmetryFold();
+      }
+      if (currentSlide === 4) {
+        playConverseSymmetryFold();
+      }
+
+      if (currentSlide === 6) {
+        btnNextLabel.textContent = "Start Quiz (Part 2)";
+        btnNext.classList.add('start-quiz-cta');
+      } else {
+        btnNextLabel.textContent = "Next";
+        btnNext.classList.remove('start-quiz-cta');
+      }
+
+      if (currentSlide < 7) {
+        tabPart1.classList.add('active');
+        tabPart2.classList.remove('active');
+        tracker.textContent = `Part 1 • Slide ${currentSlide + 1} of 7`;
+      } else {
+        tabPart1.classList.remove('active');
+        tabPart2.classList.add('active');
+        if (currentSlide < 27) {
+          tracker.textContent = `Part 2 • Question ${currentSlide - 6} of 20`;
+        } else {
+          tracker.textContent = `Part 2 • Results`;
+        }
+      }
+    }
+
+    function navigate(direction) {
+      goToSlide(currentSlide + direction);
+    }
+
+    function goToSlide(index) {
+      currentSlide = Math.max(0, Math.min(slides.length - 1, index));
+      updateUI();
+    }
+
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'ArrowRight') navigate(1);
+      if (e.key === 'ArrowLeft') navigate(-1);
+    });
+
+    // Initialize questions, score, and saved high score on load
+    generateAllQuestions(true);
+    updateQuizSummary();
+  </script>
+</body>
+</html>
